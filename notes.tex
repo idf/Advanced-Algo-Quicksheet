@@ -1,0 +1,51 @@
+%&latex
+\documentclass[a4paper]{report}
+\usepackage{commons/commons}
+\usepackage{commons/note_style}
+\usepackage[normalem]{ulem}
+\usepackage{comment}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\big\bfseries\color{black}}
+  {\chaptertitlename\ \thechapter}{5pt}{\huge}
+%\excludecomment{figure}
+\usepackage{amsbsy}
+\usepackage{amstext}
+
+
+\begin{document}
+
+%+Title
+\title{Advanced Algorithm Quicksheet}
+\author{Daniel D. Zhang, \\ Based on \textit{Database Systems - The Complete Book}}
+\date{Winter 2015. \today}
+\maketitle
+%-Title
+
+%+Abstract
+%\begin{abstract}
+%This is the notes for CSE 232A.
+%\end{abstract}
+%-Abstract
+
+%+Contents
+\tableofcontents
+%-Contents
+\chapter*{Preface}
+\section*{Acronyms}
+
+\begin{obeylines}
+\rih{Attr}. Attributes
+\rih{Ptr}. Pointer
+\rih{Mgt}. Management
+\rih{idx}. Access key to array, that is array index; but it is not the database index.
+\rih{est}. Estimate.
+\rih{$\bot$}. Independent
+
+\end{obeylines}
+\chapter{Introduction}
+Algorithmic problem solving.
+
+Technique.
+
+\end{document}
