@@ -722,8 +722,42 @@ F_i = \min_{j\in(i,n]}\Big(F_j+\mat{C}(i, j)+\mat{P}\Big)
 $$
 , where $\mat{C}(i, j)$ is the cost of transition from $i$ to $j$, and $\mat{P}$ is the penalty. 
 
-\section{Discussion}
-\subsection{Selling shares of stocks}
+\section{RNA Secondary Structures}
 
+Target: fold told the linear chain to \textbf{folded} line. determines a secondary structure S with the maximum possible number of base pairs.
+
+Rule of fold
+\begin{enumerate}
+\item No pinch 
+\item Matching 
+\item Non-crossing (this actually define a clear \textbf{boundary} to divide into subproblems)
+\item $A \leftrightarrow U, G \leftrightarrow C$
+\item $(i, j), (k,l) \ra (i<j<k<l \equiv (k-i)(l-j)>0)$
+\end{enumerate}
+The non-crossing condition is actually a help rather than the obstacle. 
+
+Math notations:
+$\Sigma=\{A, U, G, C\}$
+
+Let $a_1, ..., a_n\in \Sigma^*$
+
+output a sequence of pair $(i, j)$ s.t. 
+\begin{enumerate}
+\item $i<j$
+\item $|j-i| > 4$
+\item $(a_i, a_j)\in \mat{M}$, where $\mat{M}= \{(A, U), (U, A), (G, C), (C, G)\}$. 
+\item Each index $i$ can only appear at most in one pair. 
+\end{enumerate}
+
+Can be thought recursively. 
+
+\textbf{First} attempt $F_j$, after pair $(j-1, t)$, $F_i$ fails to capture the substructure of $A[t:j-1]$
+
+\textbf{Second} attempt: Let $F_{i,j}$ be the max possible number pairs in $A[i:j]$. For the current scanning index $j-1$, have two options 
+
+\begin{align*}
+F_{i, j} = \max\Big(&F_{i, j-1}, \\
+& \max_{(t, j-1) \in \mat{M} \wedge j-1-t>4} (F_{i, t}+1+F_{t+1, j-1})\Big)
+\end{align*}
 \end{document}
 
