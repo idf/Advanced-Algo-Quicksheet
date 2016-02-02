@@ -34,27 +34,44 @@
 %-Contents
 \chapter*{Preface}
 Quicksheet. It only contains the most essential information. 
+
+You should read it accompanied with the book: \textit{Algorithm Design by Kleinberg \& Tardos}.
 \section*{Acronyms}
 
 \begin{obeylines}
-\rih{Attr}. Attributes
 \rih{Ptr}. Pointer
-\rih{Mgt}. Management
 \rih{idx}. Access key to array, that is array index; but it is not the database index.
 \rih{est}. Estimate.
-\rih{$\bot$}. Independent
+\rih{$\bot$}. Independent.
+\rih{CNP}. Converse-negative proposition
 
 \end{obeylines}
-\chapter{Introduction}
+
+\section*{Proof techniques}
 Algorithmic problem solving.
-
-{\obeylines
-Technique. 
-Examples. 
-Writing.-  Plain English.
-}
-
-\section{Iterative Improvement}
+\begin{enumerate}
+\item ideas
+\item math notations: declarative rather than procedural. 
+\item numbering 
+\item correctness proof 
+\item time complexity derivation 
+\end{enumerate}
+Basic components of developing algorithm problem solutions:
+\begin{enumerate}
+\item Classification of problems
+\item Trial ideas 
+\item Draft procedure
+\item Proof of correctness
+\item Write formal solution
+\end{enumerate}
+Basic components of writing algorithm problem solutions:
+\begin{enumerate}
+\item Procedure 
+\item Correctness
+\item Time complexity
+\end{enumerate}
+\chapter{Introduction}
+\section{Iterative Improvement - Stable Matching Problem }
 Techniques.
 
 Example: Stable Matching Marriage. People with free-will. 
@@ -69,7 +86,7 @@ m_2: w_2 > w_1\\
 \end{align*}
 Stable matching pair: $m_i$ same preference, thus, $w_i$ gets the choices. 
 \chapter{Divide \& Conquer}
-\section*{Discussion}
+\section*{Discussion - tree \& complexity}
 
 Algorithm, starts from high-level, iterative refinements. 
 
@@ -156,7 +173,7 @@ END OF DISCUSSION
 
 Algorithm and analysis of stable matching 
 \
-\section*{Discussion}
+\section*{Discussion - stable matching and D\&C}
 \subsection*{Truthfulness}
 Stable Matching: lie to improvement self utility.
 
@@ -227,6 +244,17 @@ In the merge sort, there are two increasing sequences. What are  the ``increasin
 END OF DISCUSSION
 
 \section{Integer Multiplication}
+D\&C. 
+\begin{align*}
+& (x_1 2^l+x_0)(y_1 2^l+y_0)  \\
+=& x_1y_12^{2l}+x_1y_02^l+x_0y_12^l+x_0y_0
+\end{align*}
+Calculate 3 parts instead of 4 parts. 
+\begin{enumerate}
+\item $x_1y_1$
+\item $x_0y_0$
+\item $(x_1+x_0)(y_1+y_0)=x_1y_1+x_1y_0+x_0y_1+x_0y_0$ 
+\end{enumerate}
 \section{FFT}
 From integer multiplication to polynomial multiplication 
 \begin{align*}
@@ -237,17 +265,32 @@ From integer multiplication to polynomial multiplication
 \end{align*}
 Notice that sum of indexes is the same.
 
-Horner's method  can reduce the complexity of eval the value of the polynomial. 
-\begin{align*}
-4x^3+3x^2+2x+1 &=  \\
-&((4x+3)x+2)x+1
-\end{align*}
-
 Fourier transformation: frequency domain $\leftrightarrow$ time domain. Coefficient domain $\leftrightarrow$ value domain. 
 
 Eval $A(x), B(x), C(x)$ using $x_1, ..., x_n$. And you have the freedom of choosing $x_i$. You can evaluate the expressions when  $x_i=1$ and $x_i=-1$, you can easily eval; $\Ra$ we want $\forall i, x_i$ is 1 or -1. 
+\subsection{General Form}
+General form of FFT. Books use the index that starts at 0. 
+\begin{align*}
+\vec c &= \vec a*\vec b \\
+\vec c_k &= \sum_{(i,j): i+j=k} \vec a_i\vec b_j\\
+|\vec c| &= |\vec a|+|\vec b| -1 
+\end{align*}
+It is the 1-d convolution, which is exactly the same as 2-d convolution except that the dimension has increased. 
+
+Take middle part (\textbf{subset}) of $\vec c$:
+$$
+\vec c'_k =\sum_{(i,j): i+j= k+n} {\vec a_i \vec b_j}
+$$
 
 \section{Closet pair}
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.30]{5_6}}
+\caption{Divide}
+\label{fig:5_6}
+\end{figure}
+Find a closet pair in graph: 
+
 $(x_i, y_i), 1\leq i \leq n$. Find $i\neq j$ s.t. $(x_i-x_j)^2+(y_i-y_j)^2$ in min.
 
 \subsection{1-D problem} 
@@ -261,33 +304,39 @@ Slight deviation from the 1-D line. All points fall in a strip $2\delta$.
 But can the $\delta$ be far apart? Try to figure out the upper limit of $\delta$.
 
 After getting $\delta$, divide the band into cells of length $\delta$. 
-\begin{python}
+\begin{python}[mathescape]
 ----------
-|_|_|_|_|_| delta
-| | | | | | delta 
+|_|_|_|_|_| $\delta$
+| | | | | | $\delta$
 ----------
 \end{python}
 
 We need to find the closet pair in this narrow band, We stuck here for finding close pair in band because we haven't define the \textit{algorithmic meaning} of $\delta$, 
 
 \subsection{2-D D\&C} 
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.30]{5_7}}
+\caption{Check neighboring points within the brand.}
+\label{fig:5_7}
+\end{figure}
 Target: total $O(n \lg n)$, merge $O(n)$. 
 
 $\delta = \min(\delta_1, \delta_2)$, where $\delta_1$ is from the right sub-problem, and $\delta_2$ is from the left sub-problem. 
 
 Does there exist a pair of point $l \in \mat{L}, r \in \mat{R}$, s.t. $d(l, r) <\delta$. 
 
-Filter out the impossible (informational useless) points. 
+\textbf{FILTER} out the impossible (informational useless) points. 
 \begin{enumerate}
-\item \textbf{Outside the band}: $d(l, r)<\delta \Ra$ filter out points reside outside the separating line $L$ band of $\pm\delta$ (rather than $\pm0.5\delta$) along the $x$-axis. Form the band $\mat{S}$. 
-\item \textbf{Inside the band}: $d(l, r)<\delta \Ra$ for each scanning point $cur$,  filter out points reside outside the $\pm\delta$ along the $y$-axis; only keeps neighbors. \textbf{Limited search space}. After filtering, find the upper bound of number of neighboring points.  
+\item \textbf{Outside the band}: require $d(l, r)<\delta \Ra$ filter out points reside outside the separating line $L$ band of $\pm\delta$ (rather than $\pm0.5\delta$) along the $x$-axis. Form the band $\mat{S}$. 
+\item \textbf{Inside the band}: require $d(l, r)<\delta \Ra$ for each scanning point $cur$,  filter out points reside outside the $\pm\delta$ along the $y$-axis; only keeps neighbors. \textbf{Limited search space}. After filtering, find the upper bound of number of neighboring points.  
 \end{enumerate}
 
 If you divide the band into finer cells of length $\frac{\delta}{2}$. For each point $cur$, there are only $O(16-1)$ points that is possible to have $d(cur, nbr)<\delta$ within the 16 neighboring cells respectively. $+4: 4^2$. Then reduce the search space into $O(16-1)$ along the $y$-axis. Notice that $\forall cell$, at most 1 point $\in cell$ due to the $cell \in \mat{L}$ or $cell \in \mat{R}$.
 
 Although unnecessary, we can further reduce the search space, if the $cur\in \mat{L}$, no need consider $\{nbr|nbr\in \mat{L}\}$, the only need to consider $4^2/2=8$ neighbors, up 4 and down 4. Thus need to compare 8 $nbr$ in $S_y$. 
 
-\subsection{Write Proof}
+\subsection{Writing Proof}
 How to write the proof:
 \begin{enumerate}
 \item High-level ideas
@@ -321,7 +370,7 @@ filter out other sets.
 \end{enumerate}
 
 \subsection{Dimension}
-for high dim:
+for high dim data points:
 $$
 2^k n \log n 
 $$
@@ -370,12 +419,25 @@ Agenda:
 \item Minimizing max lateness
 \item Cache replacement policy
 \end{enumerate}
+Techniques:
+\begin{enumerate}
+\item Exchange method 
+\begin{enumerate}
+\item Compare $\mat{G}, \mat{O}$. 
+\item Starts from head, the 1st one 
+\end{enumerate}
+\item Stays ahead method
+\begin{enumerate}
+\item Compare $\mat{G}, \mat{O}$
+\item Mathematical induction 
+\end{enumerate}
+\end{enumerate}
 \section{Events scheduling}
 \textbf{Definition} of the problem: Max number of intervals without overlapping. 
 
 \textbf{Notations}
 $$
-[s_i, f_i), \text{ where }1 \leq i \leq n
+[s_i, f_i), \text{ where }0 \leq i < n
 $$
 
 \textbf{Ideas}
@@ -389,8 +451,8 @@ $$
 
 \textbf{Proof} idea 4. Proof by contradiction and proof by induction. Greedy solution $\mat{G}$, optimal solution $\mat{O}$. 
 \begin{align*}
-& \mat{G} = \{G_1, G_2, ..., G_k\}  \\
-& \mat{O} = \{O_1, O_2, ..., O_l\} \\
+& \mat{G} = \{G_0, G_1, ..., G_{k-1}\}  \\
+& \mat{O} = \{O_0, O_1, ..., O_{l-1}\} \\
 & k > l 
 \end{align*}
 
@@ -400,30 +462,30 @@ Technique ``\textit{Exchange Method}". rearrange the $\mat{O}$ to look like $\ma
 
 For the 1st elt:
 \begin{enumerate}
-\item if $G_1=O_1$, then move to the next index
-\item else, $G_1.f < O_1.f$ since greedy; and then exchange $O_1$ with $G_1$ without conflicting other $\mat{O}[2:]$. 
+\item if $G_0=O_0$, then move to the next index
+\item else, $G_0.f < O_0.f$ since greedy; and then exchange $O_0$ with $G_0$ without conflicting other $\mat{O}[1:]$.
 
-$\forall i>1, O_i.s > O_1.f >G_1.f$
+There is no conflicting in $\mat{)}[1:]$, because $\forall i\geq 1, O_i.s > O_0.f >G_0.f$. 
 \end{enumerate}
 
-For the 2nd elt: Since after exchange, $G_1=O_1$, we truncate the first element, thus the problem $\mat{O}[2:], \mat{G}[2:]$ can be solved similar as  $\mat{O}[1:], \mat{G}[1:]$.
+For the 2nd elt: Since after exchange, $G_0=O_0$, we truncate the first element, thus the problem $\mat{O}[1:], \mat{G}[1:]$ can be solved similar as  $\mat{O}[0:], \mat{G}[0:]$.
 
-After iteratively applied, $\mat{G}[1:k+1]=\mat{O}[1:k+1]$.
+After iteratively applied, $\mat{G}[0:k]=\mat{O}[0:k]$.
 
-After consuming all the $k$ element, the way of greedy works (select the earliest end time \textit{until} there are no more), you can argue that there is no more $O_{k+1},..., O_l$. If there are more, the greedy algorithm will continue the selection which contradicts that the greedy has stopped.
+After consuming all the $k$ element, the way of greedy works (select the earliest end time \textit{until} there are no more), (you need to argue that) there is no more $O_{k},..., O_{l-1}$. If there are more, the greedy algorithm will continue the selection which contradicts that the greedy has stopped.
 
 \section{Exercise}
 General methods to proof greedy algorithm
 \begin{enumerate}
 \item Exchange method
 \item Stay head 
-\item Optimal substructure 
+\item Optimal substructure - for dp. 
 \end{enumerate}
 \subsection{Changing road conditions}
 \begin{align*}
 & G_i \ra G_{i+1}\\
 & P_i \\
-& G_i, P_i, \sum_{i=0}^b l(P_i)+k \cdot change(P_0, ..., P_b)
+& G_i, P_i, \sum_{i=0}^b l(P_i)+K \cdot change(P_0, ..., P_b)
 \end{align*}
 , where $k$ for the penalty of changing the path. 
 
@@ -432,6 +494,8 @@ The $t$ changes, but the previous path does not change, but it may not be the sh
 Cannot to D\&C since the two subproblems (divide the Graph into two halves) influences each other. There is no clear boundary btw two subs. 
 
 \textbf{Relexation}. Take a simpler version of the problem, regardless the previous sequence, for the subsequent subs, you get the min cost. 
+
+\textbf{Solution}. The effect of $G_i$ on the earlier part is hard to anticipate in a greedy-type algorithm, so we'll use dynamic programming. 
 
 \subsection{Timing circuits}
 Data structure. Goes up \& down. repr
@@ -463,8 +527,7 @@ Procedure:
 1 level down, make two trees rooted at left child and right child be min-zero-skew-max-length trees; and adjust root to left and right child length to the the max-length from root-leaf path. 
 
 
-Proof the correctness of idea: 
-TODO
+Proof the correctness of idea: refer to homework. 
 
 \subsection{Time-varying MST}
 Kruskal's algorithm is sufficient. less complex than Prim's.
@@ -477,8 +540,9 @@ Once the order changes, re-run the Kruskal. (no need to optimize). Just need pol
 
 The problem is reduced to find the changing points. 
 
+
 \section{Optimal substructure}
-Proof technique for greedy algorithm and dp.
+\textit{Proof technique} for greedy algorithm and dp.
 
 a problem is said to have optimal substructure if an optimal solution can be \textbf{constructed} efficiently from \textbf{optimal} solutions of its \textbf{subproblems}. This property is used to determine the usefulness of dynamic programming and greedy algorithms for a problem.
 
@@ -487,31 +551,31 @@ e.g. maxima number of intervals.
 Find optimal solutions in subproblem, and combine the the solution. 
 
 \section{Minimize Max Lateness}
-Tasks $(t_i, d_i)$, duration and deadline. 
+Tasks $(t_i, d_i)=$ (duration, deadline). 
 
 Schedule $(s_i, f_i)$, where $f_i=s_i+t_i$, start time and end time. All jobs can be scheduled. The goal is to minimize the max lateness: 
 $$
 \min L = \min(\max_i l_i), \text{ where } l_i=\max(0, f_i-d_i)
 $$
 
-Analysis: no reason for gaps between tasks.
+Analysis: 1st observation, no reason for gaps between tasks.
 
-\textbf{Ideas}:
+\textbf{Ideas}: Greedy, at current step:
 \begin{enumerate}
-\item Min $d_i$ first
-\item Min $t_i$ first, counter example: $(2, +\infty)$, $(2, 2)$
-\item Max $l_i$ first 
+\item select min $d_i$ first
+\item select min $t_i$ first, counter example: $(2, +\infty)$, $(2, 2)$
+\item select max $l_i$ first 
 \end{enumerate}
 
 \textbf{Strategy}:
 
-The correct answer is Min $d_i$ first. 
+\textbf{Proof}. The correct answer is take min $d_i$ first. 
 
 Prof by contradictions + \textit{Exchange Method}
 
 Consider the greedy solution $\mat{G}$ s.t. scheduled as $d_1 \leq d_2\leq ...$. Consider a opt solution $\mat{O}, \exists i,j, d_i > d_j$ s.t. $i$ is scheduled earlier. 
 
-Exchange method: exchange $i, j$, but hard to analyze for the schedules $\mat{O}[i+1:j]$. However, If $i, j$ is adjacent:
+$\Leftarrow$ Exchange method: exchange $i, j$, but hard to analyze for the schedules $\mat{O}[i+1:j]$. However, If $i, j$ is adjacent, it is easier.
 \begin{figure}[!htp]
 \centering
 \subfloat{\includegraphics[scale=1.0]{4_6}}
@@ -519,16 +583,23 @@ Exchange method: exchange $i, j$, but hard to analyze for the schedules $\mat{O}
 \label{fig:4_6}
 \end{figure}
 
-Job j is earlier, lateness can only be reduced. Only need to prove $l_j>l'_i$.
+Define before swapping, the schedule is $\mat{O}$, after $\mat{O'}$. In $\mat{O'}$, job $j$ is earlier than in $\mat{O}$, lateness can only be reduced. Only need to prove $l_j>l'_i$.
 \begin{align*}
 & \mat{O} \text{ is worse than } \mat{O'} \\
 \Leftarrow & \max(l_j, l_i) > \max(l'_j, l'_i) \\
-\Leftarrow & \because l_j > l'_j, \therefore \text{only need to prove } l_j>l_i'\\
-\Leftarrow &
+\Leftarrow & \because l_j > l'_j; \because \max.  \therefore \text{only need to prove } l_j>l_i'
 \end{align*}
-Lateness of job j in \mat{O} $l_j= f_j - d_j$
+When have one important equality: $f_j=f'_i$ (draw the diagram). 
+\begin{align*}
+& l_j > l_i'\\
+\Leftarrow & f_j - d_j >f_i'-d_i \\
+\Leftarrow & f_j - d_j >f_j-d_i \\
+\Leftarrow & d_j < d_i
+\end{align*}
 
-Lateness of job j in \mat{O'} $l'_j= f'_j - d_j$
+Lateness of job j in $\mat{O}, l_j= f_j - d_j$
+
+Lateness of job j in $\mat{O'}, l'_j= f'_j - d_j$
 
 $l'_i=f'_i - d_i=f_j-d_i$. Thus, $l'_i<l_j$
 
@@ -538,9 +609,10 @@ $l'_i=f'_i - d_i=f_j-d_i$. Thus, $l'_i<l_j$
 &\because l_j > l'_j, l_j>l'_i\\
 \end{align*}
 
-Then like bubble sort.
+Here it does not consider $\exists j, d_j>f_j$
 
-\chapter{Dynamic Programming (DP)}
+Then like bubble sort. $\blacksquare$
+
 \section{Min cost of pair-wise sum}
 Operation: Sum pair-wise 
 
@@ -548,26 +620,110 @@ Sum all. Goal: get the minimize cost $c\triangleq A_i+A_j$.
 
 Analysis:
 
-Take 2 min elements, and sum them up, del the 2, put back the sum. Repeat this process. Thus, use heap. 
+Take 2 min elements, and sum them up, del the 2, put back the sum. Repeat this process.
+Thus, use heap. 
 
 Proof. TODO
 
-\section{}
+\chapter{Dynamic Programming (DP)}
+\section{General}
+\begin{enumerate}
+\item Forward (prefix) dp $[:i]$, backward (suffix) dp $[i:]$
+\end{enumerate}
+\section{Interval Scheduling with Weights}
 Given intervals $A$: $[s_i, f_i), w_i\geq 0$, where $w$ is the weight. 
 
+The state definition is to redefine the problem. 
+
 \textbf{State definition}:
-$M(i)=$ max sum of weights of a non-overlapping set of jobs where the jobs come from $A[i...n]$
+$M_i=$ max sum of weights of a non-overlapping set of jobs where the jobs come from $A[i...n]$
 
-Least relaxed problem: $M(1)$. Most related problem $M(n)$.
+Least relaxed problem: $M_1$. Most related problem $M_n$.
 
-\textbf{State transition functions}:
+\textbf{State transition functions}: Basically you have two choices: 
 \begin{align*}
-M(i) = \min&\Big( w_i+M(j) \text{, where $j$ is the earliest index s.t. } s_j\geq f_i\\
-&M(i+1)\Big)
+M_i = \min&\Big( w_i+M_j \text{, where $j$ is the earliest index s.t. } s_j\geq f_i\\
+&M_{i+1}\Big)
 \end{align*}
+
+Earliest index math definition: $j=\min\{j>i|s_j\geq f_i\}$. It is possible that $j\in \phi$. 
+
 
 Notice that, $M(i)$ is monotonous.
 
-\section{Top-down dp}
+Suffix intervals 
+
+Formal math def:
+\begin{align*}
+& \text{State definitions} \\
+& Next(i) = \{j>i|s_j\geq f_i\}\\
+& N_i = \min Next(i) \text{ if } Next(i)\neq \phi \text{ else } None\\
+& M_i = \text{Max sum of weights for interval $i$ through $n$} \\
+& D_i = 1 \text{ if interval $i$ is included in the optimal solution for interval $i$ through $n$; else } 0\\
+\\
+&\text{Initialization}\\
+& M_{i}=W_n \\
+& D_n=1 \\
+\\
+&\text{State transition} \\
+&\text{for i = n-1 downto 1:}\\
+& M_i = \max\Big(w_i+M_{N_i} \text{ if }N_i\neq None \text{ else } w_i, \\&
+\quad M_{i+1} \Big) \\
+& D_i = 1 \text{ if }w_i+M_{N_i}\geq M_{i+1} \text{ or } w_i \geq M_{i+1} \\
+& \quad 0 \text{ ow} \\
+& \text{Output the optimal solution} \\
+& out(1)\\
+\end{align*}
+\begin{python}[mathescape]
+def out(i):
+  if $D_i=$ 1:
+    output interval $A_i$ 
+    if $N_i\neq$  None:
+      out($N_i$)
+  else:
+    out(i+1)
+\end{python}
+
+The notations should be well defined. 
+
+
+\section{DP computing}
 solve the problem in brute force, find same subs, cache them, reduce exponential to polynomial. 
+\subsection{Cached recursion}
+\subsection{Tabulation}
+\section{Segmented Least Squares}
+input: $(x_i, y_i), 1\leq i\leq n$ output: $a, b$ for $y=ax+b$. 
+
+Why take square of the error? make the cost function to be convex to use gradient descent. 
+Fit lines, two extreme cases:
+\begin{enumerate}
+\item 1 line 
+\item lines on every consecutive pair 
+\end{enumerate}
+
+Rough thoughts:
+$$
+\varepsilon_i = \min_{j\in (i, n]} \Big(LSE(i, j)+\varepsilon_j\Big)
+$$
+
+Regularization using \textbf{penalty} $\mat{P}$, $\mat{P}$ can also be a function. 
+$$
+\varepsilon_i = \min_{j\in (i, n]} \Big(LSE(i, j)+\varepsilon_j+\mat{P}\Big)
+$$
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.30]{6_9}}
+\caption{Segmented Least Squares}
+\label{fig:6_9}
+\end{figure}
+General forms:
+$$
+F_i = \min_{j\in(i,n]}\Big(F_j+\mat{C}(i, j)+\mat{P}\Big)
+$$
+, where $\mat{C}(i, j)$ is the cost of transition from $i$ to $j$, and $\mat{P}$ is the penalty. 
+
+\section{Discussion}
+\subsection{Selling shares of stocks}
+
 \end{document}
+
