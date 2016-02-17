@@ -1,7 +1,7 @@
 # Advanced Database Quicksheet
 
 ## Sample Page
-![](img/readme_screenshot.png)
+TODO
 
 ## PDF Download
-[notes.pdf](https://github.com/idf/Advanced-Database-Quicksheet/releases)
+[notes.pdf](https://github.com/idf/Advanced-Algo-Quicksheet/releases)
