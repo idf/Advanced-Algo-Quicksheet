@@ -51,7 +51,7 @@ You should read it accompanied with the book: \textit{Algorithm Design by Kleinb
 Algorithmic problem solving.
 \begin{enumerate}
 \item ideas
-\item math notations: declarative rather than procedural. 
+\item math notations: declarative rather than procedural. - don't think about the implementation details. Think about mathematical expressions (\textit{Functional Programming} way of thinking). 
 \item numbering 
 \item correctness proof 
 \item time complexity derivation 
@@ -424,7 +424,10 @@ Techniques:
 \item Exchange method 
 \begin{enumerate}
 \item Compare $\mat{G}, \mat{O}$. 
+\begin{enumerate}
 \item Starts from head, the 1st one 
+\item Starts with the immediate neighbors, inversion. 
+\end{enumerate}
 \end{enumerate}
 \item Stays ahead method
 \begin{enumerate}
@@ -493,7 +496,7 @@ The $t$ changes, but the previous path does not change, but it may not be the sh
 
 Cannot to D\&C since the two subproblems (divide the Graph into two halves) influences each other. There is no clear boundary btw two subs. 
 
-\textbf{Relexation}. Take a simpler version of the problem, regardless the previous sequence, for the subsequent subs, you get the min cost. 
+\textbf{Relexation}. Take a simpler version of the problem, regardless the previous sequence, for the subsequent subs, you get the min cost. Define substructure with parameters to relax problem. 
 
 \textbf{Solution}. The effect of $G_i$ on the earlier part is hard to anticipate in a greedy-type algorithm, so we'll use dynamic programming. 
 
@@ -575,7 +578,7 @@ Prof by contradictions + \textit{Exchange Method}
 
 Consider the greedy solution $\mat{G}$ s.t. scheduled as $d_1 \leq d_2\leq ...$. Consider a opt solution $\mat{O}, \exists i,j, d_i > d_j$ s.t. $i$ is scheduled earlier. 
 
-$\Leftarrow$ Exchange method: exchange $i, j$, but hard to analyze for the schedules $\mat{O}[i+1:j]$. However, If $i, j$ is adjacent, it is easier.
+$\Leftarrow$ Exchange method: exchange $i, j$, but hard to analyze for the schedules $\mat{O}[i+1:j]$. However, If $i, j$ is \textbf{adjacent}, it is easier.
 \begin{figure}[!htp]
 \centering
 \subfloat{\includegraphics[scale=1.0]{4_6}}
@@ -611,7 +614,11 @@ $l'_i=f'_i - d_i=f_j-d_i$. Thus, $l'_i<l_j$
 
 Here it does not consider $\exists j, d_j>f_j$
 
-Then like bubble sort. $\blacksquare$
+Then like bubble sort to swap the nodes.
+
+We say that a schedule has an \textit{inversion} if a job $i$ with deadline $d_i$ is scheduled \textbf{before} another job $j$ with \textbf{earlier} deadline $d_j<d_i$.
+
+The optimal solution is the one with no inversions. If $\mat{O}$ has an inversion, then $\exists$ a pair of jobs $i$ and $j$ s.t. $j$ is scheduled immediately after $i$ and has $d_j<d_i$. $\blacksquare$
 
 \section{Min cost of pair-wise sum}
 Operation: Sum pair-wise 
@@ -623,12 +630,21 @@ Analysis:
 Take 2 min elements, and sum them up, del the 2, put back the sum. Repeat this process.
 Thus, use heap. 
 
-Proof. TODO
+Proof. \textit{Exchange method}, $\mat{O}, \mat{G}$ consider an inversion point. 
 
+\section{Relationship with DP}
+DP is the superset of Greedy. 
 \chapter{Dynamic Programming (DP)}
 \section{General}
 \begin{enumerate}
 \item Forward (prefix) dp $[:i]$, backward (suffix) dp $[i:]$
+\item End with $i$ (required); End before or with $i$ (optional)
+\item Expand parameters of the state $F$ to refine the substructure
+\item From different perspective 
+\begin{enumerate}
+\item Consumed vs. Remaining 
+\item Assigner vs. Assignee 
+\end{enumerate}
 \end{enumerate}
 \section{Interval Scheduling with Weights}
 Given intervals $A$: $[s_i, f_i), w_i\geq 0$, where $w$ is the weight. 
@@ -723,6 +739,7 @@ $$
 , where $\mat{C}(i, j)$ is the cost of transition from $i$ to $j$, and $\mat{P}$ is the penalty. 
 
 \section{RNA Secondary Structures}
+TODO Graph
 
 Target: fold told the linear chain to \textbf{folded} line. determines a secondary structure S with the maximum possible number of base pairs.
 
@@ -753,11 +770,343 @@ Can be thought recursively.
 
 \textbf{First} attempt $F_j$, after pair $(j-1, t)$, $F_i$ fails to capture the substructure of $A[t:j-1]$
 
-\textbf{Second} attempt: Let $F_{i,j}$ be the max possible number pairs in $A[i:j]$. For the current scanning index $j-1$, have two options 
+\textbf{Second} attempt: Let $F_{i,j}$ be the max possible number pairs in $A[i:j]$.
+
+When $j-i<5$:
+\begin{align*}
+F_{i, j} = 0
+\end{align*}
+
+For the current scanning index $j-1$, have two options pair $(j-1, t)$ or not. 
 
 \begin{align*}
 F_{i, j} = \max\Big(&F_{i, j-1}, \\
 & \max_{(t, j-1) \in \mat{M} \wedge j-1-t>4} (F_{i, t}+1+F_{t+1, j-1})\Big)
 \end{align*}
-\end{document}
 
+Notice that you can do either forward dp or backward dp. 
+
+\section{Midterm}
+\subsection{Median}
+\subsection{Restaurant}
+Let $M_i$ be the max profit obtained with restaurant opened at position $i$ through $n$. (suffix)
+\begin{align*}
+M_i = \max_{j>i+d(i)} \Big(P_i + M_j\Big) 
+\end{align*}
+
+Calculate the 
+$$L_i=\min_j\{j>i|d_j - d_i \geq k\}$$
+
+\textbf{Efficient} way to compute the $L_i$
+
+But $M_i$ is \textbf{decreasing} array, thus only need to find the $L_i$.
+$$
+M_i = p_i + M_{L_i}
+$$
+
+TODO: efficient way. f
+\subsection{Class Assignment}
+The order of the classes does not matter. The strategy: find the smallest available room. 
+
+\textbf{Proof} the correctness of the strategy. 
+
+\textit{Exchange method}. Fixed the order of classes. 
+$C(\alpha)\geq S(\alpha)$. 
+
+$\mat{G}=\{R_1,R_2, ..., R_n\}$, where $\forall i, C(R_i)\geq S(i)$. 
+
+$\min \sum_{i=1}^n C(R_i)$. 
+
+Assume a optimal produces $\mat{O}=\{R_1', R_2', ..., R_n'\}$ with a smaller sum. 
+
+Assume $R_1$ appears in $\mat{O}$ as $R_j'$. 
+\begin{align*}
+& C(R'_1)\geq C(R_1) \text{ since greedy way}\\
+& \because C(R'_1)\geq C(R_j') \geq S(R_j') \wedge C(R_j')\geq S(R_1) \therefore \text{Can swap } R_1',  R_j'\\
+& \text{Consequently, after swapping,}  \mat{O}[0]=\mat{G}[0]
+\end{align*}
+
+Uniter intervals cover the houses. Greedy method: left endpoint just cover the 1st house, then remove all covered houses. 
+
+\textbf{Proof.} Exchange method. Focus on the 1st house. In $\mat{O}$ the interval is to the left of that of $\mat{G}$ then can exchange. 
+
+\chapter{Network Flow}
+\section{Max Flow - Min Cut}
+\subsection{Notations}
+Max Flow: highly abstracted model. 
+\begin{enumerate}
+\item Discreted graph $G=(V,E)$
+\item Vertices $u, v, u_i, v_i, s, t$
+\item Edges $e, e_L, (u,v), uv$
+\item Capacity $C: E\ra \R, C(e)$. (it is not weight)
+\item Flow: $f: E\ra \R$
+\end{enumerate}
+Properties 
+\begin{enumerate}
+\item $\forall e \in E, 0\leq f(e)\leq C(e)$
+\item Conservation: $$\forall v\in V/\{s,t\}, \sum_{uv\in E}f(uv)=\sum_{vu\in E}f(vu)$$
+, where $uv$ is the inflow for $v$, and $vu$ is the outflow. Compact notation $f^{in}(v), f^{out}(v)$. 
+\item The Value of the graph:
+$$V(f) = \sum_{su\in E}f(su)$$
+, outflow for $s$. 
+\end{enumerate}
+Target: find $f$ with $\max V(f)$.
+
+Idea: 
+\begin{itemize}
+\item Try greedy algorithm does not work
+\item Need to undo the flow
+\item Residual graph to allow undo for the flow. 
+\item Backtrack is normally exponential, but it need to be done in an efficient way. 
+\end{itemize}
+\subsection{Ford-Fulkerson Algorithm}
+\subsection{Residual Graph}
+$G_R$ - Residual Graph 
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=0.9]{7_4}}
+\caption{Flow network and residual graph}
+\label{fig:7_4}
+\end{figure}
+\begin{align*}
+&G_R = (V, E')~\text{s.t.}\\
+\end{align*}
+$G_R$ has the new capacity $C_{GR}$ s.t.
+\begin{enumerate}
+\item Forward edge: $C_{uv}-f_{uv}$. (leftover)
+\item Backward edge:\ $-f_{uv}$. (potential undo amount) 
+\end{enumerate}
+\subsection{Ford-Fulkserson}
+\subsubsection{Algorithm}
+\begin{enumerate}
+\item Start with $f(e)=0, \forall e \in E$
+\item Compute residual graph $G_R$. Strictly $f_{uv}>0$, and forward edge and backward can simultaneously exists. Given a flow $f_{uv} \cdot u \ra v$. 
+\begin{itemize}
+\item Forward edge capacity: $c_{uv}-f_{uv}$ 
+\item Backward edge capacity: $f_{uv}$.
+\end{itemize}
+\item Find an path $s$-$t$ in $G_R$. 
+$$P, \delta(P)=\min_{e\in P} \{C_{G_R}(e)\}$$
+strictly, $\delta(R)>0$. 
+\item Augment $f$ to get new $f'$, the flow. 
+\begin{align}
+& f'(uv)= f(uv)+\delta \text{ if $uv\in P$ in a forward edge}\\
+& f'(vu)= f(vu)-\delta \text{ if $uv \in P$ in a backward edge} \label{eqn:backward}\\
+& f'(uv)=f(uv) \text{ ow}
+\end{align}
+Notice that in \ref{eqn:backward} is update $vu$, and $uv$ is the backward edge. $f(vu)$ only represents the abs value, not the direction, thus need to $-\delta$. The flow $f(vu)$ and flow $\delta$ are of different directions. 
+\item Repeat
+\end{enumerate}
+\textbf{Proof.} $f'$ is a flow in $G$. The $0\leq f(e)\leq C(e)$. See P343.
+
+\textbf{Proof.} Check conservation condition. 
+
+
+This algorithm maintains: 
+$$
+V(f')= V(f)+\delta
+$$
+Observations:
+\begin{enumerate}
+\item at $s$, flow $f$ can only hit its out edge - $f^{in}(s)=0$.
+\item at $t$, flow $f$ can only hit its in edge - $f^{out}(t)=0$ 
+\end{enumerate}
+\subsubsection{Termination}
+Terminates when \textbf{no residual graph}. The Ford-Fulkerson Algorithm \textbf{terminates}
+when the flow $f$ has \textbf{no} $s$-$t$ path in the residual graph $G_R$ (or written
+as $G_f$). 
+
+
+Complexity $O(|E| C_{\text{mincut}})$. 
+\subsubsection{Cut}
+cut. Let $G_R$ be s.t. $\neg \exists s\sim t$ path. 
+\begin{align*}
+& A = \{u| s\sim_{G_R} u\} \text{ reachable in graph $G_R$}\\
+& B = V/A\\
+& \text{cut } (A, B) \sim \text{output}
+\end{align*}
+, where $V$ is the verticies. 
+
+$(A, B)$ is a cut, iff 
+\begin{enumerate}
+\item $s\in A, t\in B$. 
+\item $A\cap B = \phi$. 
+\item $A\cup B = V$
+\end{enumerate}
+Define $\delta(A,B)=\{uv\in E| u\in A, v\in B\}$. 
+
+\subsubsection{Mincut}
+Cut capacity, natural upper bounds on the values of flows.
+\begin{align*}
+& Mincut = \min_{cut(A,B)} Cap(A, B)\\
+& Maxflow \leq Cap(A, B) \forall A, B \leq Mincut
+\end{align*}
+To prove $Maxflow = Mincut$. In the residual graph $G_R$:
+
+$$
+\max_{flow~f} v(f) = \min_{cut(A, B)} \text{Capacity}(A,B)
+$$
+
+\textbf{Proof.} The upper bound of $v(f)$ is mincut. Let $f$ be any flow, $(A,B)$ be any cut. 
+\begin{align*}
+v(f) &= f^{out}(A)-f^{in}(A) \\
+&\leq \sum_{e \text{ out of }A}C(e) - 0\\
+&\leq \text{Capacity}(A, B) \\
+\end{align*}
+
+This proof does not require any knowledge of Ford-Fulkerson algorithm $\blacksquare$. 
+
+At the time we fail find $s$-$t$ path. The Ford-Fulkerson Algorithm \textbf{terminates} when the flow $f$ has \textbf{no} $s$-$t$ path in the residual graph $G_R$ (or written as $G_f$). 
+
+Consider edge $uv, C(uv)$. See figure \ref{fig:7_5}. 
+\begin{align*}
+u,v' \in A\\
+v,u' \in B \\ 
+u \text{ reachable from } s. 
+\end{align*}
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.20]{7_5}}
+\caption{$Maxflow = Mincut$}
+\label{fig:7_5}
+\end{figure}
+
+\textbf{Proof}. Prove $f(uv)=C(uv)$. Prove no more positive flow. If there is a $f(uv)< C(uv)$, then there is a \textbf{forward} edge in $G_R$, then $v$ is \textbf{reachable} by $s$; which is contradiction. $\blacksquare$
+
+\textbf{Proof}. Prove $f(u'v')=0$, i.e. proving not flow from $B$ to $A$. (not backward edge in $G_R$). If $(u'v')\neq 0$, it gives rise to \textbf{backward} edge $v'u'$ in $G_R$, then $u'$ is \textbf{reachable} by $s$. Thus contradiction. $\blacksquare$
+\subsubsection{Scaling algorithm}
+Find the bottleneck of the path, and $\max$ the bottleneck, it can be done by Dijkstra's algorithm. 
+
+Alternatively, increase the performance of FF algorithm. use binary search to boost. 
+
+$\Delta$, the value we want to push on the graph. Let $\Delta=2^t \leq \max C(e)$. Let $\Delta$ be the longest such $\Delta$.
+\begin{python}[mathescape]
+$f$ = 0
+while $\Delta\geq 1$:
+  compute $G^\Delta(f)$
+  augment $f$ on $G_R$
+  update $G_R$
+  if not augment:
+    $\Delta$/=2
+\end{python}
+, where $G^\Delta(f)$ filters out that the $e, C(e)\leq \Delta$. 
+\subsubsection{Complexity}
+$C = \max_{e}C(e)$. The complexity is:
+$$
+O(|E|(|V|+|E|)\log C) = O(|E|^2 \log C)
+$$
+, where augment flow, find a path $O(|E|+|V|)$
+
+For every given value $\Delta$, there is at most $O(|E|)$ iterations: 
+
+\begin{align*}
+v(f) &= f^{out}(A)-f^{in}(A) \\
+&= \sum_{e~out}C(e)-\text{Slack}(e)-f^{in}(A) \\
+&\geq \sum_{e~out}C(e)-\sum_{e~out}\Delta-\sum_{e~in}\Delta \\
+\\
+v(f)+|E|\Delta &\geq \sum_{e~out}C(e) \geq maxflow
+\end{align*}
+
+\subsection{Applications}
+\subsubsection{Maximum Matching - Bipartite Graph}
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.40]{bipart}}
+\caption{Bipartite Graph $G$ and $G_\text{Bipart}$}
+\label{fig:bipart}
+\end{figure}
+See figure \ref{fig:bipart}
+\begin{align*}
+& G_B = (V_1, V_2, E') \\
+& G=(V, E) \\
+& V= V_1 \cup V_2\cup \{s, t\}\\
+& \text{Let } i, j \in V_1 \cup V_2\\
+& (i,j)\in E' \leftrightarrow (i, j)\in E\\
+& \forall i \in V_1, (s, i) \in E \\
+& \forall j \in V_2, (s, j) \in E. 
+\end{align*}
+
+Matching. 
+
+\begin{align*}
+\forall e \in e, C(e) =1
+\end{align*}
+
+\textbf{Proof correspondence}. Let $f$ be any flow of $G$, let $M$ be any matching in $G_B$. Claims:
+\begin{enumerate}
+\item $\exists$ a matching $M$ s.t. $|M|=v(f)$.
+
+Flow conservation. Select mincut. $\forall v \in V_1\cup V_2$, due to flow conservation, there is only 1 in edge and 1 out edge. $\therefore \forall v_1 \in V_1$ is matched to at most 1 $v_2 \in V_2. $
+\item 
+\end{enumerate}
+\section{Discussion}
+\subsection{Job Scheduling}
+Do not have node for each time period naively. Use event. 
+\subsection{Graph Cohesiveness}
+Social network problem. 
+
+\subsection{Matrix Rounding}
+\begin{align*}
+A_{m\times n} = \begin{bmatrix}
+r_{11} & ... & r_{1n} \\
+... & &...&\\
+r_{m1} & ... & r_{mn}
+\end{bmatrix}
+\end{align*}
+Col sum for $i$-th column: $C_i$; row sum for $i$-th row $R_i$. Overall, the sum of sum are equal: $\sum C_i = \sum R_j$. 
+
+Given $0 \leq r_{ij}\leq 1$. Only the fraction we cares about. 
+
+Think about distribute $\sum R_i$ to the $R_i$ entries, which can only take 0 or 1.
+
+Reduce to max-flow problem. 
+\begin{align*}
+s \ra \{R_1, ..., R_m\} \ra G \ra \{C_1, ..., C_n\} \ra t
+\end{align*}
+Can drop the $G$. 
+\begin{align*}
+s \ra \{R_1, ..., R_m\} \ra \{C_1, ..., C_n\} \ra t
+\end{align*}
+, vertices with the capacity $R_i, C_j$. 
+
+
+\textbf{Proof.} Proof correspondence. mat $\Leftrightarrow G$. 
+
+Work from the $V(f)=\sum R_i =\sum C_i$. Each $\{R_1, ..., R_m\}$ and $\{C_1, ..., C_n\}$ are full, and intermediate edges are either 0 or 1. 
+
+\textbf{Proof.} Always $V(f)=\sum R_i$. Find that the \textit{min cut} is the max-flow.
+\subsection{Database Projections}
+Projection and Permutations.
+Columns 1,...,n
+\begin{align*}
+& S_i \subset \{1,..., n\}\\
+& 1 \leq l < k
+\end{align*}
+
+Prefix: bag version, order does not matter. e.g.
+\begin{align*}
+& S_1 = \{3, 5, 1\} \\
+& C= \{1, 3,5, 2, 6, 4\}
+\end{align*}
+One permutation can be used in multiple projections. 
+
+What if two bags, $S_1 \subset S_2$. - 1 permutation.
+
+What if three bags, $S_1 \subset S_2 \subset S_3$. - 1 permutation.
+
+\textbf{Represent the database problem use graph}. Lattice graph: subset relationship of a graph $G$. Boolean lattice.
+
+\begin{align*}
+S_1 \ra & S_2 \ra S_5\\
+\searrow & S_4 \nearrow
+\end{align*}
+Partition the graph with minimal number of chain, min cut, the max flow. 
+\subsection{Spanning subgraph}
+Bipartite \& Undirected
+\begin{align*}
+s \ra \{L_1, ..., L_m\} \ra G \ra \{R_1, ..., R_n\} \ra t
+\end{align*}
+For $s \ra L_i$ has as cap $d_{L_i}$. 
+
+Proof necessary condition. 
+\end{document}
