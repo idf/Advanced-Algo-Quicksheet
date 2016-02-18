@@ -1105,4 +1105,123 @@ s \ra \{L_1, ..., L_m\} \ra G \ra \{R_1, ..., R_n\} \ra t
 For $s \ra L_i$ has as cap $d_{L_i}$. 
 
 Proof necessary condition. 
+
+\section{Project Selection}
+\subsection{Construction}
+\begin{enumerate}
+\item $S$ - set of \textit{project}
+\item project $i\in S$, \textit{gain} $P_i$ could be negative 
+\item Objective: Select $T\subseteq S$ s.t. $\max \sum_{i\in T} P_i$.
+\item Constraint: Directed graph $G=(S, E)$ on projects 
+$$
+i \ra j
+$$
+$i$ in selected $\Ra$ $j$ should be selected. Note the graph is directed. Complete $j$ is a necessary condition for starting $i$. 
+
+$T\subseteq S$ in closed, if $i\in T, i\ra j, j \in T$. 
+\end{enumerate}
+Technique: add $+\infty$ edge weight. 
+
+
+Consider $\forall i, P_i \geq 0$ and $\forall i, P_i <0$. These special cases are shown below:
+
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.10]{scheduleprojectSpecial}}
+\caption{Degenerated cases}
+\label{fig:scheduleprojectSpecial}
+\end{figure} 
+
+\subsection{Proof}
+
+$+\infty$ capacity, then cannot be mincut, since $\exists$ cut with finite value.
+
+In general case. 
+
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.20]{scheduleproject}}
+\caption{Schedule Project}
+\label{fig:scheduleproject}
+\end{figure}
+
+$Cap(A, B)=\sum_{e~out~A} = \sum_{j \notin A, P_j\geq 0}P_j+\sum_{j \in A, P_j<0}-P_j$. If $j \notin A, j$ is connected to $s$. If $j \in A, j$ is connected to $t$. 
+
+$T=A/\{s\}$.
+
+\begin{align*}
+Cap(A, B)&=\sum_{j\notin T, P_j\geq 0}P_k+\sum_{j\in T, P_j <0}(-P_j) \\
+&= (\sum_{P_j\geq 0}P_j-\sum_{j \in T, P_j\geq 0}P_j)+\sum_{j\in T, P_j <0}-P_j.\\
+&=  \sum_{P_j\geq 0}P_j - Profit(T)
+\end{align*}
+
+, where $\sum_{P_j\geq 0}P_j$ is a constant.
+
+Therefore, max the profit T $\equiv$ min the cut of #Cap(A, B). The correspondence is proved. 
+
+
+\section{Baseball Elimination}
+\begin{enumerate}
+\item $S$ - collection of teams 
+\item $x\in S, w_x$ number of of wins
+\item $x, y \in S, g_{x, y}$  \# of games to be played (more games to play)
+\item For a given, $z\in S$ specific team, $m$ \# of possible wins. $m \leq w_z+\sum_{x\in S} g_{z,x}$
+\end{enumerate}
+
+Describe the \textbf{middle} of seasons. undirected graph
+
+Team and $w_j$ - NY: 92, BLT: 91, TNT: 91, BOS: 90.
+
+$$x -\ _{g_{x, y}} - y$$
+
+
+Under this notation, we have developed a very rudimentary graph: 
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.20]{baseball0}}
+\caption{Graph with edge of $g_{x,y}$}
+\label{fig:baseball0}
+\end{figure}
+\subsection{Construction}
+From the $z$'s perspective. 
+
+$s$ sends $g_{x,y}$, on pair $(x,y)$, then split the wins, then $t$ constrains number of wins. 
+
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.0]{baseball01}}
+\caption{Network construction}
+\label{fig:baseball01}
+\end{figure}
+
+\subsection{Proof}
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=.90]{baseball}}
+\caption{Baseball Elimination}
+\label{fig:baseball}
+\end{figure}
+Let $g^*=\sum_{(x,y)} g_{x, y}$. $maxflow = g^*$? If $\neq$, $z$ cannot win $m$. 
+
+Let $(A, B)$ be a cut.
+\begin{align*}
+Cap(A, B) &= \sum_{(x,y)\notin A} g_{x,y}+\sum_{x\in T} m-w_x\\
+&= \sum_{(x,y)}g_{x, y}-\sum_{(x, y)\in A} g_{x, y}+\sum_{x\in T}m-w_x\\
+&= g^*-\sum_{(x, y)\in A} g_{x, y}+m|T|\sum_{x\in T}-w_x
+\end{align*}
+, where $T=$ teams $\in A$.
+
+If $maxflow <g^*$, $m=(\sum_{x\in T} w_x+\sum_{(x,y)\in A} g_{x,y})/|T|$. i.e. the average win played among teams except $z$ themselves. 
+
+\textbf{Proof.} $(x,y)\in A$, then $x, y\in T$. If $x \notin T$, then $x \in B$, then $\exists e$ that connects $(x,y)\in A$ and $x\in B$, thus mincut $+\infty$, which contradicts the fact that the mincut is finite $\blacksquare$. 
+
+\textbf{Eliminate $z$}. 
+\begin{itemize}
+\item $z$ can finish with at most $m$ wins.
+\item $\exists T\subseteq S$ so that
+$$
+\sum_{x\in T} w_x + \sum_{x, y \in T} g_{x, y} > m|T|
+$$
+The average \#wins in $T$ is larger than $m$. $\therefore \exists t \in T$, a team ends with strictly more than $m$ wins. $\therefore z$  can be eliminated.
+\end{itemize}
 \end{document}
