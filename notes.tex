@@ -931,8 +931,15 @@ $(A, B)$ is a cut, iff
 \end{enumerate}
 Define $\delta(A,B)=\{uv\in E| u\in A, v\in B\}$. 
 
+Notice: the cut capacity of $cut(A,B)$ is defined as:
+$$
+cut(A, B) = \sum_{e \text{ out of }A}C(e)
+$$
+
+Only consider the edges $A\ra B$, not the edges $A \leftarrow B$. 
+
 \subsubsection{Mincut}
-Cut capacity, natural upper bounds on the values of flows.
+Consider any cut $cut(A,B)$. Cut capacity, natural upper bounds on the values of flows.
 \begin{align*}
 & Mincut = \min_{cut(A,B)} Cap(A, B)\\
 & Maxflow \leq Cap(A, B) \forall A, B \leq Mincut
