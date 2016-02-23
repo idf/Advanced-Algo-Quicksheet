@@ -1010,11 +1010,15 @@ v(f) &= f^{out}(A)-f^{in}(A) \\
 v(f)+|E|\Delta &\geq \sum_{e~out}C(e) \geq maxflow
 \end{align*}
 
+Edmonds-Karp algorithm complexity:
+$$
+O(|V||E|^2)
+$$
 \subsection{Applications}
 \subsubsection{Maximum Matching - Bipartite Graph}
 \begin{figure}[!htp]
 \centering
-\subfloat{\includegraphics[scale=1.40]{bipart}}
+\subfloat{\includegraphics[scale=1.20]{bipart}}
 \caption{Bipartite Graph $G$ and $G_\text{Bipart}$}
 \label{fig:bipart}
 \end{figure}
@@ -1231,4 +1235,19 @@ $$
 $$
 The average \#wins in $T$ is larger than $m$. $\therefore \exists t \in T$, a team ends with strictly more than $m$ wins. $\therefore z$  can be eliminated.
 \end{itemize}
+
+\subsection{Social cohesiveness}
+This problem is similar to problem of baseball elimination. 
+
+Application, community detection in FB\ social network graph.
+
+\subsection{Spanning Subtree}
+$G=(V_1, V_2, E)$. Bipartie. Subgraph, $G'=(V_1, V_2, E')$, where $E'\subseteq E$.
+
+Degree $deg(v)=|\{uv|u\in V_1\cup V_2\}|$. 
+
+Property of the degree $\sum_v deg(v)=2|E|$
+
+\subsection{Database projection}
+Cover the graph with the minimum number of chains. After you select a vertex on the chain, the vertex can only be selected \textbf{once}. $\forall v\in V, f^{out}(v)=f^{in}(v)=1$, 
 \end{document}
