@@ -12,6 +12,9 @@
 %\excludecomment{figure}
 \usepackage{amsbsy}
 \usepackage{amstext}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}{Lemma}[section]
 
 \graphicspath{{./fig/}}
 \begin{document}
@@ -1014,6 +1017,11 @@ Edmonds-Karp algorithm complexity:
 $$
 O(|V||E|^2)
 $$
+
+Linear Ford-Fulkerson complexity:
+$$
+O(C|E|)
+$$
 \subsection{Applications}
 \subsubsection{Maximum Matching - Bipartite Graph}
 \begin{figure}[!htp]
@@ -1250,4 +1258,166 @@ Property of the degree $\sum_v deg(v)=2|E|$
 
 \subsection{Database projection}
 Cover the graph with the minimum number of chains. After you select a vertex on the chain, the vertex can only be selected \textbf{once}. $\forall v\in V, f^{out}(v)=f^{in}(v)=1$, 
+
+\chapter{Approximation Algorithms}
+\section{Makespan}
+\subsection{Notations}
+\begin{itemize}
+\item $n$ jobs, $t_1, t_i, t_n$
+\item $m$ machines 
+\item Assign jobs to machines - $A_i$ - set of jobs. Machine $i$
+\item Objective:
+$$load_A(i)=\sum_{j\in A_i} t_j$$
+$$makspan = \max_i load_A(i)$$
+Minimize the makespan. i.e. mini-max problem: minimize the maximum load. 
+
+Ideal situation: load uniform distributed. 
+
+\begin{align*}
+T&=\sum_{jobs~j}t_j\\
+\bar T &= \frac{T}{m}. 
+\end{align*}
+\end{itemize}
+
+It is a NPC problem. 
+
+\begin{itemize}
+\item NP: polynomial algorithm for guessing and verifying the solution to the problem.
+\item NP vs. P: $P\subseteq NP$. Find \textit{all} the solutions in \textit{polynomial} time, and verify each solution in polynomial time. If able, NP=P. But enumerate all solutions may take $2^n$. 
+\item NP-Complete: NPC is harder than NP. $NP\subseteq NPC$. 
+\end{itemize}
+
+\subsection{Approximation Ration}
+$$
+\frac{T_\mat{G}}{T_\mat{O}}
+$$
+
+Guarantee the efficacy (quality) and efficiency of the solution. But we need now $T_\mat{O}$ to know the ratio. But we can calculate without knowing what exactly $T_\mat{O}$ is. We can know the range of $T_\mat{O}$.
+
+\subsection{Greedy Method}
+$$
+\frac{T_\mat{G}}{T_\mat{O}} \leq 2
+$$
+
+Need to find the upper bound of $T_\mat{G}$ and the lower bound of $T_\mat{O}$ for min problem. 
+
+\textbf{Proof.} Two bounds for $T_\mat{O}$. 
+\begin{align*}
+T_\mat{O} &\geq \bar T \\
+T_\mat{O} &\geq t_{max}
+\end{align*}
+
+\textbf{Track}. Focus on the machine that gets the max load. Machine $i^*$ with max load with last job assigned $j^*$. 
+
+Greedy key: assign the job to the \textbf{smallest} load machine. Thus machine $i^*$ has the smaller than average load before such assignment. 
+
+\begin{align*}
+T_{i^*} - t_{j^*} &\leq \frac{1}{m} \sum_{i} T_i\\\
+T_{i^*} - t_{j^*} &\leq \bar T \\
+T_{i^*} &\leq \bar T + t_{j^*}\\
+T_{i^*} &\leq T^* +T^*
+\end{align*}
+, where $t_{j^*}\leq t_{max}\leq T^*$. 
+
+Can strictly $\frac{T_\mat{G}}{T_\mat{O}}<2$. strictly less than 2. 
+
+strictly, it is:
+$$
+\frac{T_\mat{G}}{T_\mat{O}} \leq 2-\frac{1}{m}
+$$
+
+\subsubsection{Improvement}
+when $n\leq m$, each machine has at most 1 job; thus $T=t_{max}$. 
+
+when $n>m$, sort in decreasing order. 
+
+\begin{align*}
+& T_\mat{O} \geq \bar T \\
+& T_\mat{O} \geq t_{max} \\
+& T_\mat{O} \geq t_j + t_{m+1} \geq 2t_{m+1} \\ 
+\end{align*}
+
+, where $j\in[1, m]$.
+
+Pigeon hole principle, assigned at leat two jobs.
+
+Consider max machine $i$, with the last assigned job $j$. Before assignment $j$ it is $T$
+
+\begin{align*}
+& T_\mat{G}=load(i) = T+t_j\\
+& T \leq \bar T \text{ since greedy}\\
+& T \leq T_\mat{O} \\
+& t_i \leq t_{m+1} \text{ since index} \\
+& t_i \leq \frac{1}{2}T_\mat{O}
+\end{align*}
+
+Regarding $t_j$, there are two cases:
+\begin{enumerate}
+\item If the max loaded machine only has 1 job, then $T = t_{max}$ 
+\item If the machine has at least 2 jobs, $j\geq m+1$.
+\end{enumerate}
+
+Therefore, 
+$$load(i)\leq \frac{3}{2} T_\mat{O}$$
+
+Technique: \textbf{track} the optimal $T_\mat{O}$. Inequality. 
+
+\section{Center Selection}
+\subsection{Notation}
+$n$ towns $S$, $k$ shopping malls $C$. 
+
+distance:
+$$
+dist(s_i, C) =\min_{c\in C} dist(s_i, c)
+$$
+
+min the the max distance $\forall s_i \in S$.
+
+$$
+\min \max_i dist(s_i, C)
+$$
+
+Use $r$ radius to denote the coverage of $C$, i.e. $r$-cover. Equivalently 
+$$
+\min r(C)
+$$
+\subsection{Natural greedy algorithm}
+Put the first center at the centering $s_{center}$, and then find the $s$ with max, put $c$ right at here. 
+
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.20]{11_4}}
+\caption{Center Coverage}
+\label{fig:11_4}
+\end{figure}
+
+\begin{lem}
+$\frac{r_\mat{G}}{r_\mat{O}}<2$. 
+\end{lem}
+
+\textbf{Proof.} 
+
+Let $C=\{C^i | i\in[1, k]\}$ created by $\mat{G}$ at each step with cardinality $i$. 
+
+Assume $\exists j, dist(s_j, C^k)\geq 2r_\mat{O}$. distance between any two $s$ within a $r$-cover is at most $2r$.
+
+In $\mat{O}$, $C^*$. We can use the existence of this solution $C^∗$ in $\mat{O}$ though we do not know what $C^*$ is. Consider any site $s \in S$. There must be a center $c^* \in C^*$ that covers site $s$, and this center $c^*$ is at distance at most $r$ from $s$. $\mat{G}$ takes this $s$ as a center instead of $c^*$, as we have no idea what $c^*$ is. To make s cover all the sites that $c^*$ covers in the unknown solution $C^*$, this is accomplished by expanding the radius from $r$ to $2r$. All the sites that were at distance at most $r$ from center $c^*$ are at distance at most $2r$ from $s$ (by the triangle inequality in the circle).
+
+\section{Vertex Cover}
+$G=(V, E)$. Select $V'\subseteq V$ that covers all $E$.
+
+objective:
+$$\min |V'|$$
+
+Book 11.4. 
+
+Track the optimal solution. 
+
+\textbf{Vertex perspective}. Naive greedy: select $v\in V$ with the largest degree. Counter example that approximate ration $>2$. 
+
+\textbf{Edge perspective}. Select the maximal matching. Collection of edges that do not share $v$. 
+
+Select the $v$ on the maximal matching. It covers edges, since is no more edge does not share vertex with maximal matching (i.e. all edges share a vertex in maximal matching). Thus, by select all $v$ on the maximal matching. It can cover.
+
+Maximal matching \textbf{tracks} (i.e. bounds) the $\mat{O}$. 
 \end{document}
