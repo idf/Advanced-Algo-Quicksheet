@@ -6,15 +6,17 @@
 \usepackage[normalem]{ulem}
 \usepackage{comment}
 \usepackage{titlesec}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}{Lemma}[section]
+
+
 \titleformat{\chapter}[display]
   {\normalfont\sffamily\big\bfseries\color{black}}
   {\chaptertitlename\ \thechapter}{5pt}{\huge}
 %\excludecomment{figure}
 \usepackage{amsbsy}
 \usepackage{amstext}
-\theoremstyle{definition}
-\newtheorem{thm}{Theorem}[section]
-\newtheorem{lem}{Lemma}[section]
 
 \graphicspath{{./fig/}}
 \begin{document}
@@ -28,7 +30,7 @@
 
 %+Abstract
 %\begin{abstract}
-%This is the notes for CSE 232A.
+% Abstract
 %\end{abstract}
 %-Abstract
 
