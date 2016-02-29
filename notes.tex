@@ -6,12 +6,13 @@
 \usepackage[normalem]{ulem}
 \usepackage{comment}
 \usepackage{titlesec}
-
+\usepackage{amsthm}
+\theoremstyle{definition}
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{lem}{Lemma}[section]
 
 
-\titleformat{\chapter}[display]y
+\titleformat{\chapter}[display]
   {\normalfont\sffamily\big\bfseries\color{black}}
   {\chaptertitlename\ \thechapter}{5pt}{\huge}
 %\excludecomment{figure}
@@ -733,16 +734,23 @@ $$
 \caption{Segmented Least Squares}
 \label{fig:6_9}
 \end{figure}
+
 General forms:
 $$
 F_i = \min_{j\in(i,n]}\Big(F_j+\mat{C}(i, j)+\mat{P}\Big)
 $$
+
 , where $\mat{C}(i, j)$ is the cost of transition from $i$ to $j$, and $\mat{P}$ is the penalty.
 
 \section{RNA Secondary Structures}
-TODO Graph
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.00]{rna}}
+\caption{RNA\ Seconary Structures}
+\label{fig:rna}
+\end{figure}
 
-Target: fold told the linear chain to \textbf{folded} line. determines a secondary structure S with the maximum possible number of base pairs.
+Target: fold the linear chain to \textbf{folded} line. determines a secondary structure S with the maximum possible number of base pairs.
 
 Rule of fold
 \begin{enumerate}
@@ -752,7 +760,7 @@ Rule of fold
 \item $A \leftrightarrow U, G \leftrightarrow C$
 \item $(i, j), (k,l) \ra (i<j<k<l \equiv (k-i)(l-j)>0)$
 \end{enumerate}
-The non-crossing condition is actually a help rather than the obstacle.
+The non-crossing condition is actually a help of defining boundary condition rather than the obstacle.
 
 Math notations:
 $\Sigma=\{A, U, G, C\}$
@@ -769,20 +777,20 @@ output a sequence of pair $(i, j)$ s.t.
 
 Can be thought recursively.
 
-\textbf{First} attempt $F_j$, after pair $(j-1, t)$, $F_i$ fails to capture the substructure of $A[t:j-1]$
+\textbf{First} attempt: $F_j$, after pair $(j-1, t)$, $F_i$ fails to capture the substructure of $A[t:j-1]$
 
 \textbf{Second} attempt: Let $F_{i,j}$ be the max possible number pairs in $A[i:j]$.
 
-When $j-i<5$:
+Boundary condition. When $j-i<5$:
 \begin{align*}
 F_{i, j} = 0
 \end{align*}
 
-For the current scanning index $j-1$, have two options pair $(j-1, t)$ or not.
+Transition function. For the current scanning index $j-1$, have two options pair $(j-1, t)$ or not.
 
 \begin{align*}
 F_{i, j} = \max\Big(&F_{i, j-1}, \\
-& \max_{(t, j-1) \in \mat{M} \wedge j-1-t>4} (F_{i, t}+1+F_{t+1, j-1})\Big)
+& \max_{(t, j-1) \in \mat{M} \wedge j-1-t>4} (F_{i, t+1}+F_{t+1, j-1})\Big)
 \end{align*}
 
 Notice that you can do either forward dp or backward dp.
@@ -805,11 +813,11 @@ $$
 M_i = p_i + M_{L_i}
 $$
 
-TODO: efficient way. f
+TODO: efficient way to reduce the complexity to $O(n)$.
 \subsection{Class Assignment}
 The order of the classes does not matter. The strategy: find the smallest available room.
 
-\textbf{Proof} the correctness of the strategy.
+\textbf{Proof.} the correctness of the strategy.
 
 \textit{Exchange method}. Fixed the order of classes.
 $C(\alpha)\geq S(\alpha)$.
@@ -827,7 +835,8 @@ Assume $R_1$ appears in $\mat{O}$ as $R_j'$.
 & \text{Consequently, after swapping,}  \mat{O}[0]=\mat{G}[0]
 \end{align*}
 
-Uniter intervals cover the houses. Greedy method: left endpoint just cover the 1st house, then remove all covered houses.
+\textbf{Example}.
+Unit intervals cover the houses. Greedy method: left endpoint just cover the 1st house, then remove all covered houses.
 
 \textbf{Proof.} Exchange method. Focus on the 1st house. In $\mat{O}$ the interval is to the left of that of $\mat{G}$ then can exchange.
 
@@ -836,7 +845,7 @@ Uniter intervals cover the houses. Greedy method: left endpoint just cover the 1
 \subsection{Notations}
 Max Flow: highly abstracted model.
 \begin{enumerate}
-\item Discreted graph $G=(V,E)$
+\item Discrete graph $G=(V,E)$
 \item Vertices $u, v, u_i, v_i, s, t$
 \item Edges $e, e_L, (u,v), uv$
 \item Capacity $C: E\ra \R, C(e)$. (it is not weight)
@@ -886,9 +895,9 @@ $G_R$ has the new capacity $C_{GR}$ s.t.
 \item Forward edge capacity: $c_{uv}-f_{uv}$
 \item Backward edge capacity: $f_{uv}$.
 \end{itemize}
-\item Find an path $s$-$t$ in $G_R$.
-$$P, \delta(P)=\min_{e\in P} \{C_{G_R}(e)\}$$
-strictly, $\delta(R)>0$.
+\item Find an path $P$ $s$-$t$ in $G_R$.
+$$\delta(P)=\min_{e\in P} \{C_{G_R}(e)\}$$
+strictly, $\delta(P)>0$.
 \item Augment $f$ to get new $f'$, the flow.
 \begin{align}
 & f'(uv)= f(uv)+\delta \text{ if $uv\in P$ in a forward edge}\\
@@ -896,6 +905,12 @@ strictly, $\delta(R)>0$.
 & f'(uv)=f(uv) \text{ ow}
 \end{align}
 Notice that in \ref{eqn:backward} is update $vu$, and $uv$ is the backward edge. $f(vu)$ only represents the abs value, not the direction, thus need to $-\delta$. The flow $f(vu)$ and flow $\delta$ are of different directions.
+
+
+\begin{align*}
+u \leftarrow v
+\end{align*}
+$uv$ is the backward edge, the flow is $f(vu)$ from $v$ to $u$. 
 \item Repeat
 \end{enumerate}
 \textbf{Proof.} $f'$ is a flow in $G$. The $0\leq f(e)\leq C(e)$. See P343.
@@ -918,9 +933,9 @@ when the flow $f$ has \textbf{no} $s$-$t$ path in the residual graph $G_R$ (or w
 as $G_f$).
 
 
-Complexity $O(|E| C_{\text{mincut}})$.
+Complexity $O(C_{\text{mincut}}|E|)$.
 \subsubsection{Cut}
-cut. Let $G_R$ be s.t. $\neg \exists s\sim t$ path.
+Cut. Let $G_R$ be s.t. $\neg \exists s \sim t$ path. $a \sim b$ means there is a path from $a$ to $b$. 
 \begin{align*}
 & A = \{u| s\sim_{G_R} u\} \text{ reachable in graph $G_R$}\\
 & B = V/A\\
@@ -936,30 +951,34 @@ $(A, B)$ is a cut, iff
 \end{enumerate}
 Define $\delta(A,B)=\{uv\in E| u\in A, v\in B\}$.
 
-Notice: the cut capacity of $cut(A,B)$ is defined as:
+The cut capacity of $cut(A,B)$ is defined as:
 $$
-cut(A, B) = \sum_{e \text{ out of }A}C(e)
+cap(A, B) = \sum_{e \text{ out of }A}C(e)
 $$
 
-Only consider the edges $A\ra B$, not the edges $A \leftarrow B$.
+Notice: only consider the edges $A\ra B$, not the edges $A \leftarrow B$.
 
 \subsubsection{Mincut}
 Consider any cut $cut(A,B)$. Cut capacity, natural upper bounds on the values of flows.
 \begin{align*}
-& Mincut = \min_{cut(A,B)} Cap(A, B)\\
-& Maxflow \leq Cap(A, B) \forall A, B \leq Mincut
+& mincut = \min_{cut(A,B)} cap(A, B)\\
+& maxflow \leq cap(A, B) \forall A, B \leq mincut
 \end{align*}
-To prove $Maxflow = Mincut$. In the residual graph $G_R$:
+To prove $maxflow = mincut$. In the residual graph $G_R$:
 
 $$
-\max_{flow~f} v(f) = \min_{cut(A, B)} \text{Capacity}(A,B)
+\max_{flow~f} v(f) = \min_{cut(A, B)} cap(A,B)
 $$
 
-\textbf{Proof.} The upper bound of $v(f)$ is mincut. Let $f$ be any flow, $(A,B)$ be any cut.
+\begin{lem}
+The upper bound of $v(f)$ is mincut.
+\end{lem}
+
+\textbf{Proof.} Let $f$ be any flow, $(A,B)$ be any cut.
 \begin{align*}
 v(f) &= f^{out}(A)-f^{in}(A) \\
 &\leq \sum_{e \text{ out of }A}C(e) - 0\\
-&\leq \text{Capacity}(A, B) \\
+&\leq cap(A, B) \\
 \end{align*}
 
 This proof does not require any knowledge of Ford-Fulkerson algorithm $\blacksquare$.
@@ -979,8 +998,14 @@ u \text{ reachable from } s.
 \label{fig:7_5}
 \end{figure}
 
-\textbf{Proof}. Prove $f(uv)=C(uv)$. Prove no more positive flow. If there is a $f(uv)< C(uv)$, then there is a \textbf{forward} edge in $G_R$, then $v$ is \textbf{reachable} by $s$; which is contradiction. $\blacksquare$
+\begin{lem}
+ $f(uv)=C(uv)$.
+\end{lem}
+\textbf{Proof.} Prove no more positive flow. If there is a $f(uv)< C(uv)$, then there is a \textbf{forward} edge in $G_R$, then $v$ is \textbf{reachable} by $s$; which is contradiction. $\blacksquare$
 
+\begin{lem}
+$f(u'v')=0$
+\end{lem}
 \textbf{Proof}. Prove $f(u'v')=0$, i.e. proving not flow from $B$ to $A$. (not backward edge in $G_R$). If $(u'v')\neq 0$, it gives rise to \textbf{backward} edge $v'u'$ in $G_R$, then $u'$ is \textbf{reachable} by $s$. Thus contradiction. $\blacksquare$
 \subsubsection{Scaling algorithm}
 Find the bottleneck of the path, and $\max$ the bottleneck, it can be done by Dijkstra's algorithm.
@@ -1015,18 +1040,25 @@ v(f) &= f^{out}(A)-f^{in}(A) \\
 v(f)+|E|\Delta &\geq \sum_{e~out}C(e) \geq maxflow
 \end{align*}
 
-Edmonds-Karp algorithm complexity:
+\subsection{Summary of Complexity}
+\begin{enumerate}
+\item Edmonds-Karp algorithm complexity:
 $$
 O(|V||E|^2)
 $$
-<<<<<<< HEAD
-
-Linear Ford-Fulkerson complexity:
+\item Linear Ford-Fulkerson complexity:
 $$
 O(C|E|)
 $$
-=======
->>>>>>> 9bcaf28e6c1c9b20df0c4f696960832da1a75fcb
+\item Scaled Ford-Fulkerson complexity:
+$$
+O(\log C \cdot |E|^2)
+$$
+\end{enumerate}
+
+
+
+
 \subsection{Applications}
 \subsubsection{Maximum Matching - Bipartite Graph}
 \begin{figure}[!htp]
@@ -1263,7 +1295,7 @@ Property of the degree $\sum_v deg(v)=2|E|$
 
 \subsection{Database projection}
 Cover the graph with the minimum number of chains. After you select a vertex on the chain, the vertex can only be selected \textbf{once}. $\forall v\in V, f^{out}(v)=f^{in}(v)=1$,
-<<<<<<< HEAD
+
 
 \chapter{Approximation Algorithms}
 \section{Makespan}
@@ -1273,11 +1305,15 @@ Cover the graph with the minimum number of chains. After you select a vertex on 
 \item $m$ machines
 \item Assign jobs to machines - $A_i$ - set of jobs. Machine $i$
 \item Objective:
-$$load_A(i)=\sum_{j\in A_i} t_j$$
-$$makspan = \max_i load_A(i)$$
+\begin{align*}
+&load_A(i)=\sum_{j\in A_i} t_j\\
+&makespan = \max_i load_A(i)\\
+&\min makespan
+\end{align*}
+
 Minimize the makespan. i.e. mini-max problem: minimize the maximum load.
 
-Ideal situation: load uniform distributed.
+\textbf{Ideal situation}: load uniform distributed.
 
 \begin{align*}
 T&=\sum_{jobs~j}t_j\\
@@ -1308,10 +1344,10 @@ $$
 Need to find the upper bound of $T_\mat{G}$ and the lower bound of $T_\mat{O}$ for min problem.
 
 \textbf{Proof.} Two bounds for $T_\mat{O}$.
-\begin{align*}
+\begin{align}
 T_\mat{O} &\geq \bar T \\
 T_\mat{O} &\geq t_{max}
-\end{align*}
+\end{align}
 
 \textbf{Track}. Focus on the machine that gets the max load. Machine $i^*$ with max load with last job assigned $j^*$.
 
