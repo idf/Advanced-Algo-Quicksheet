@@ -20,6 +20,8 @@
 \usepackage{amstext}
 
 \graphicspath{{./fig/}}
+\usepackage{amsmath}
+
 \begin{document}
 
 %+Title
@@ -1349,7 +1351,7 @@ T_\mat{O} &\geq \bar T \\
 T_\mat{O} &\geq t_{max}
 \end{align}
 
-\textbf{Track}. Focus on the machine that gets the max load. Machine $i^*$ with max load with last job assigned $j^*$.
+\fbox{\textbf{Track}}. Focus on the machine that gets the max load. Machine $i^*$ with max load with last job assigned $j^*$.
 
 Greedy key: assign the job to the \textbf{smallest} load machine. Thus machine $i^*$ has the smaller than average load before such assignment.
 
@@ -1369,9 +1371,9 @@ $$
 $$
 
 \subsubsection{Improvement}
-when $n\leq m$, each machine has at most 1 job; thus $T=t_{max}$.
+When $n\leq m$, each machine has at most 1 job; thus $T=t_{max}$.
 
-when $n>m$, sort in decreasing order.
+when $n>m$, sort in decreasing order. \fbox{Improvement} from sorting. 
 
 \begin{align*}
 & T_\mat{O} \geq \bar T \\
@@ -1443,7 +1445,7 @@ Let $C=\{C^i | i\in[1, k]\}$ created by $\mat{G}$ at each step with cardinality 
 
 Assume $\exists j, dist(s_j, C^k)\geq 2r_\mat{O}$. distance between any two $s$ within a $r$-cover is at most $2r$.
 
-In $\mat{O}$, $C^*$. We can use the existence of this solution $C^∗$ in $\mat{O}$ though we do not know what $C^*$ is. Consider any site $s \in S$. There must be a center $c^* \in C^*$ that covers site $s$, and this center $c^*$ is at distance at most $r$ from $s$. $\mat{G}$ takes this $s$ as a center instead of $c^*$, as we have no idea what $c^*$ is. To make s cover all the sites that $c^*$ covers in the unknown solution $C^*$, this is accomplished by expanding the radius from $r$ to $2r$. All the sites that were at distance at most $r$ from center $c^*$ are at distance at most $2r$ from $s$ (by the triangle inequality in the circle).
+In $\mat{O}$, $C^*$. We can use the existence of this solution $C^∗$ in $\mat{O}$ though we do not know what $C^*$ is. Consider any site $s \in S$. There must be a center $c^* \in C^*$ that covers site $s$, and this center $c^*$ is at distance at most $r$ from $s$. $\mat{G}$ takes this $s$ as a center instead of $c^*$, as we have no idea what $c^*$ is. To make s cover all the sites that $c^*$ covers in the unknown solution $C^*$, this is accomplished by \fbox{expanding the radius} from $r$ to $2r$. All the sites that were at distance at most $r$ from center $c^*$ are at distance at most $2r$ from $s$ (by the triangle inequality in the circle).
 
 \section{Vertex Cover}
 $G=(V, E)$. Select $V'\subseteq V$ that covers all $E$.
@@ -1462,4 +1464,245 @@ Track the optimal solution.
 Select the $v$ on the maximal matching. It covers edges, since is no more edge does not share vertex with maximal matching (i.e. all edges share a vertex in maximal matching). Thus, by select all $v$ on the maximal matching. It can cover.
 
 Maximal matching \textbf{tracks} (i.e. bounds) the $\mat{O}$.
+
+
+\section{Discussion}
+Standard NPC problems (considered as standard undergrad material):a
+\begin{enumerate}
+\item Satisfiability 
+\item Coloring
+
+$G$, $k$ coloring.
+
+\item V cover, indpt set 
+\item Hamilton path 
+
+sufficient condition
+\end{enumerate}
+
+Reduce the known NPC problem to unknown 
+
+
+Given $P_0$ is NPC, show $P_1$ is NPC
+$$
+P_0 \leq_P P1
+$$
+
+Mapping function polynomial time $f$ s.t. $x \ra_f f(x)$. 
+
+$x\in P_0, f(x) \in P_1$. To answer $P_0$, we only need to answer $P_1$. 
+
+
+
+\subsection*{Perfect assembly}
+Permutation $\ra$ Reordering $\ra$ Sequence $\ra$ Path, $G=(V, E)$. 
+
+\subsection*{MaxCut for Trees}
+Optimal substructure. DP. Not split subtree into 2 equal parts. Partition into $k$ and $m-k$ subproblem. 
+
+Independent, vertex cover in tree. Special case for NPC. 
+
+\subsection*{Heaviest first}
+Max weighted independent set. NPC although special case. 
+
+\begin{align*}
+& \frac{T_\mat{G}}{T_\mat{O}} \geq \frac{1}{4} 
+\end{align*}
+
+4 relates to the neighbors. 
+
+Either picks the max or the all its neighbor. 
+
+\subsection*{Feedback edge set}
+How to find feedback edge set in undirected graph. $G=(V, E)$. 
+
+\section{Primal-Dual Method}
+\subsection*{Min Vertex Cover}
+
+TODO graph for price allocation: 
+
+
+Undirected $G=(V, E)$
+
+\textbf{unweighted.} Find S \subseteq V$ s.t. $\forall \{i, j\}\in E, i\in S \vee j\in S$ s.t. 
+$$
+\min |S|
+$$
+
+For bipartite graph: min vertex cover = max matching
+
+\textbf{Weighted.} Find smallest set of vertexes to cover all edges. 
+
+$v\in V$, $v$ has a weight $w_v>0$. objective: 
+$$
+\min \sum_{v\in S} w_v
+$$
+
+\subsection*{Pricing Method}
+\fbox{Fair pricing}:
+$$\sum_{e~incident~v} P_e\leq w_v$$
+
+$\leq$ comes out from linear programming. Duality. 
+
+Primal dual method: assign vertex costs to edge. 
+
+Select edges s.t. no share vertex (idea from max matching)
+
+Tight vertex: when equality happens. 
+
+$$\delta_v = w_v -\sum_{uv\in E}P_uv=0$$
+
+Code:
+\begin{python}[mathescape]
+$\forall e\in E, P_e=0$
+$S^*=\phi$
+while $\exists uv\in S$ s.t. $u\notin S^* \wedge v\notin S^*$
+  increase the $P_{uv}$ just before violating fairness
+  maintain $S^*$
+\end{python}
+
+Bound of $w(S_\mat{G})$
+
+\begin{align*}
+w(S_\mat{G}) &= \sum_{v\in S_\mat{G}} w_v\\
+&= \sum_{v\in S_\mat{G}}\sum_{uv\in E} p_{uv}\\
+\sum_{e\in E} P_e \leq w(S_\mat{G}) &\leq 2\sum_{e\in E}P_e \\
+\end{align*}
+
+Some edges $e\in E$ can appear twice if two tight vertex or once if only one tight vertex. $e$ can be covered by at most 2 vertexes. 
+
+Optimal method 
+\begin{align*}
+w_\mat{O} &= \sum_{v\in S_\mat{O}} w_v \\
+&\geq \sum_{v\in S_\mat{O}} \sum_{uv\in E}P_{uv} \\
+&\geq \sum_{e\in E} P_e
+\end{align*}
+
+The price is tracking (bound) the solution.
+
+Primal-dual comes from linear programming. \textit{Price} dual the \textit{cost}. 
+
+
+\section{Min Set Cover}
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=.80]{setCover}}
+\caption{Set Cover}
+\label{fig:setCover}
+\end{figure}
+\begin{itemize}
+\item $S_i, w_i\geq 0$
+\item Select $J \subseteq \{1, ..., n\}$ s.t.  $\cup_{i\in J} S_i = U$ and 
+$$
+\min \sum_{i\in J} w_i
+$$
+\end{itemize}
+Approximate ration: $\ln |U|$
+$$
+w(T_\mat{G}) \leq \ln |U| w(T_\mat{O})
+$$
+
+Pricing idea, average price for vertex $v \in S_i$:
+$$
+\frac{w_i}{|S_i|}
+$$
+
+Refined pricing. \fbox{Contribution}:
+$$
+\frac{w_i}{|R\cap S_i|}
+$$
+
+Code: 
+\begin{python}[mathescape]
+$R=U$
+while $R$:
+  select $j$ s.t. $\frac{w_j}{|S_j\cap R|}$ is minimized: $j=\arg\min \frac{w_i}{|S_j\cap R|}$. 
+  select $S_j$ 
+  $R=R-S_j$
+\end{python}
+
+When each vertex $v$ is purchased, $v$ pays an amortized price. 
+
+Assign price 
+\begin{align*}
+\forall k \in R \cap S_j, p_k &= \frac{w_j}{|R\cap S_j|}\\
+w_j &= \sum_{k\in R\cap S_j}p_k
+\end{align*}
+
+Consider $T_\mat{G}$ be the indexes of selected sets. 
+\begin{align*}
+w(T_\mat{G}) &= \sum_{i\in T_\mat{G}} w_i \\
+&= \sum_{i\in T_G}\sum_{k\in \text{new cover} S_j} p_k \\
+&= \sum_{v\in U} P_v
+\end{align*}
+
+Harmonic function: Euler Constant $\gamma$, capturing the continuous integration and discrete summation:
+
+\begin{align*}
+\lim_{n\to\infty}\left(H(n) - \ln n\right) = \gamma 
+\end{align*}
+
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.20]{Gamma-area}}
+\caption{$\gamma$}
+\label{fig:gammaArea}
+\end{figure}
+
+Fair pricing
+$$
+\forall i, w_i \geq \sum_{j\in S_i} p_j
+$$
+
+Cost of sets are given, the assigning price is fair. Should not assign too much of price. 
+
+Relax the fair pricing: 
+
+\begin{lem}
+\begin{align*}
+\forall i, H(|S_i|) w_i \geq \sum_{k\in S_i} p_k
+\end{align*}
+\end{lem}
+
+\textbf{Proof.} Consider when selecting $S_i=\{1, 2,.., j, ...,l\}$. Consider the $p_j$.
+
+\begin{align*}
+p_j &= \frac{w_i}{l-j+1} \text{ if $j$ is the new covered by $S_i$}\\ 
+p_j &\leq \frac{w_i}{l-j+1} \text{ if $j$ is covered by another set $S_{i'}$ by greedy}\\
+\therefore \sum_{1\leq j \leq l} p_j &\leq \sum_{1 \leq j \leq l} \frac{w_i}{l-j+1} = H(l) w_i
+\end{align*}
+
+$\blacksquare$
+
+Note some $k$ may be covered by other set than $S_i$. 
+
+\begin{align*}
+w(T_\mat{O}) &= \sum_{i\in T_\mat{O}} w_i \\
+&\geq \sum_{i\in T_\mat{O}} \sum_{k\in S_i} \frac{1}{H(|S_i|)} p_k\\
+&\geq \frac{1}{H(|U|)} \sum_{i\in T_\mat{O}} \sum_{k\in S_i} p_k \\
+&\geq \frac{1}{H(|U|)} \sum_{k\in U} p_k
+\end{align*}
+
+\section{Vertex Cover}
+LP (Linear Programming) Relaxation Rounding. 
+
+general technique \textit{Integer Linear Programming} (ILP). 
+
+$x_v \in \{0, 1\}$, indicate whether $v$ is selected. 
+
+objective:
+\begin{align*}
+& \min \sum_{v\in V} w_v x_v \\
+\text{s.t. } &\forall uv \in E, x_u+x_v \geq 1 \text{ # one of them must be selected}\\
+& \forall v \in V, 0 \leq x_v \leq 1 \text{ # replace hard constraint to \textit{soft} constraint}
+\end{align*}
+
+All NPC can be expressed in linear programming. 
+
+The optimal solution: 
+\begin{align*}
+\mat{O}_{ILP}\geq \mat{O}_{LP} \text{ min problem}\\
+\mat{O}_{LP} = \sum_{v\in V} w_v x_v^* \\
+x_v = roundUp(x_v^*)
+\end{align*}
 \end{document}
