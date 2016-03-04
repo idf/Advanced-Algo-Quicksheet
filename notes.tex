@@ -51,7 +51,7 @@ You should read it accompanied with the book: \textit{Algorithm Design by Kleinb
 \rih{idx}. Access key to array, that is array index; but it is not the database index.
 \rih{est}. Estimate.
 \rih{$\bot$}. Independent.
-\rih{CNP}. Converse-negative proposition
+\rih{CNP}. Converse-negative proposition. (i.e. \textit{Contrapositive})
 
 \end{obeylines}
 
@@ -1052,6 +1052,8 @@ $$
 $$
 O(C|E|)
 $$
+
+, where $O(|E|+|V|)=O(|E|)$ for dfs path search. 
 \item Scaled Ford-Fulkerson complexity:
 $$
 O(\log C \cdot |E|^2)
@@ -1223,7 +1225,7 @@ Therefore, max the profit T $\equiv$ min the cut of #Cap(A, B). The corresponden
 \item $S$ - collection of teams
 \item $x\in S, w_x$ number of of wins
 \item $x, y \in S, g_{x, y}$  \# of games to be played (more games to play)
-\item For a given, $z\in S$ specific team, $m$ \# of possible wins. $m \leq w_z+\sum_{x\in S} g_{z,x}$
+\item For a given, $z\in S$ specific team, $m=$ \# of possible wins. $m \leq w_z+\sum_{x\in S} g_{z,x}$
 \end{enumerate}
 
 Describe the \textbf{middle} of seasons. undirected graph
@@ -1240,7 +1242,11 @@ Under this notation, we have developed a very rudimentary graph:
 \caption{Graph with edge of $g_{x,y}$}
 \label{fig:baseball0}
 \end{figure}
-\subsection{Construction}
+\subsection{Intuition}
+\begin{align*}
+
+\end{align*}
+\subsection{Network Construction}
 From the $z$'s perspective.
 
 $s$ sends $g_{x,y}$, on pair $(x,y)$, then split the wins, then $t$ constrains number of wins.
@@ -1248,40 +1254,66 @@ $s$ sends $g_{x,y}$, on pair $(x,y)$, then split the wins, then $t$ constrains n
 \begin{figure}[!htp]
 \centering
 \subfloat{\includegraphics[scale=1.0]{baseball01}}
-\caption{Network construction}
+\caption{Network construction $s, E, V, t$}
 \label{fig:baseball01}
 \end{figure}
 
-\subsection{Proof}
+\subsection{Correctness}
 \begin{figure}[!htp]
 \centering
 \subfloat{\includegraphics[scale=.90]{baseball}}
 \caption{Baseball Elimination}
 \label{fig:baseball}
 \end{figure}
-Let $g^*=\sum_{(x,y)} g_{x, y}$. $maxflow = g^*$? If $\neq$, $z$ cannot win $m$.
+
+Let $g^*=\sum_{(x,y)} g_{x, y}$.
+
+\begin{thm}
+$maxflow \neq g^* \Leftrightarrow z$ cannot be eliminated. 
+\end{thm}
+\begin{lem}
+$maxflow \neq g^* \Leftrightarrow$ $z$ cannot win $m$.
+\end{lem}
+
+\textbf{Proof.}
 
 Let $(A, B)$ be a cut.
 \begin{align*}
 Cap(A, B) &= \sum_{(x,y)\notin A} g_{x,y}+\sum_{x\in T} m-w_x\\
 &= \sum_{(x,y)}g_{x, y}-\sum_{(x, y)\in A} g_{x, y}+\sum_{x\in T}m-w_x\\
-&= g^*-\sum_{(x, y)\in A} g_{x, y}+m|T|\sum_{x\in T}-w_x
+&= g^*-\sum_{(x, y)\in A} g_{x, y}+m|T|-\sum_{x\in T}w_x\\
+&= g^*-\sum_{(x, y)\in T} g_{x, y}+m|T|-\sum_{x\in T}w_x
 \end{align*}
 , where $T=$ teams $\in A$.
 
-If $maxflow <g^*$, $m=(\sum_{x\in T} w_x+\sum_{(x,y)\in A} g_{x,y})/|T|$. i.e. the average win played among teams except $z$ themselves.
+If $maxflow <g^*$, $m<(\sum_{x\in T} w_x+\sum_{(x,y)\in A} g_{x,y})/|T|$. i.e. the average win played among teams except $z$ themselves.
 
-\textbf{Proof.} $(x,y)\in A$, then $x, y\in T$. If $x \notin T$, then $x \in B$, then $\exists e$ that connects $(x,y)\in A$ and $x\in B$, thus mincut $+\infty$, which contradicts the fact that the mincut is finite $\blacksquare$.
+\textbf{Claim 1.} $(x,y)\in A \Rightarrow x,y \in A$. If $x \notin A$, then $x \in B$, then $\exists e$ that connects $(x,y)\in A$ and $x\in B$, thus mincut $+\infty$, which contradicts the fact that the mincut is finite $\blacksquare$.
+
+\textbf{Claim 2.} $(x,y)\in A \Leftarrow x,y \in A$. If not, $(x,y)\in B$, then can move $(x, y)$ to $A$ to reduce the cut. 
+
+$\therefore (x,y)\in A \Leftrightarrow x,y \in A$. 
 
 \textbf{Eliminate $z$}.
 \begin{itemize}
 \item $z$ can finish with at most $m$ wins.
 \item $\exists T\subseteq S$ so that
-$$
-\sum_{x\in T} w_x + \sum_{x, y \in T} g_{x, y} > m|T|
-$$
+\begin{align*}
+\sum_{x\in T} w_x + \sum_{x<y \wedge x, y \in T} g_{x, y} > m|T|  \\
+\text{ // total, not incremental }
+\end{align*}
+
+
 The average \#wins in $T$ is larger than $m$. $\therefore \exists t \in T$, a team ends with strictly more than $m$ wins. $\therefore z$  can be eliminated.
+
+$avg > m \ra \exists x\in T$ wins more than $m$. 
 \end{itemize}
+
+\begin{lem}
+If $x$ has been eliminated, the $maxflow < g^*$
+\end{lem}
+
+\textbf{Proof.} Step 1, convert the statement to CNP. Step 2, interpret the network and state the $$\forall x \in T, w(x)+f_{xt}\leq m$$
 
 \subsection{Social cohesiveness}
 This problem is similar to problem of baseball elimination.
@@ -1298,6 +1330,32 @@ Property of the degree $\sum_v deg(v)=2|E|$
 \subsection{Database projection}
 Cover the graph with the minimum number of chains. After you select a vertex on the chain, the vertex can only be selected \textbf{once}. $\forall v\in V, f^{out}(v)=f^{in}(v)=1$,
 
+\section{Summary}
+\subsection{Classical Problems}
+\begin{enumerate}
+\item \textbf{Bipartite matching} 
+\item \textbf{Edge-disjoint paths }
+\item \textbf{Edge-disjoint paths in undirected graph}: antiparallel edges
+\item \textbf{Supply demand network}: circulation with demand, add $s, t$
+\item \textbf{Survey design}: integer circulation, add $s \overset{+\infty}{\leftarrow} t$
+\item \textbf{Airline schedule}: circulation with \textbf{bound}, $[a, b]$
+\item \textbf{Project selection}: relationship (dependency) graph with $p_v, \infty$ cap. 
+\item \textbf{Baseball elimination}: relationship (game) graph with $\infty$ cap. avg \& max relationship. 
+\item \textbf{Assignment problem}: 
+\end{enumerate}
+\subsection{Proof Notations}
+\begin{align*}
+G_1 &= (V_1, E_1) \\  
+V_1 &= \{s\} \cup L \cup R \cup \{t\}
+\end{align*}
+
+\subsection{Proof Techniques}
+\begin{enumerate}
+\item Integrality theorem: 0-1
+\item Flow Conservation: in = out, continuance
+\item Maxflow mincut theorem 
+\item Given the objective function. Construct the network flow s.t. mincut eqn equates the objective function. 
+\end{enumerate}
 
 \chapter{Approximation Algorithms}
 \section{Makespan}
