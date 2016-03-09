@@ -964,7 +964,8 @@ Notice: only consider the edges $A\ra B$, not the edges $A \leftarrow B$.
 Consider any cut $cut(A,B)$. Cut capacity, natural upper bounds on the values of flows.
 \begin{align*}
 & mincut = \min_{cut(A,B)} cap(A, B)\\
-& maxflow \leq cap(A, B) \forall A, B \leq mincut
+& maxflow \leq cap(A, B) \forall A, B \\
+& \therefore maxflow \leq mincut
 \end{align*}
 To prove $maxflow = mincut$. In the residual graph $G_R$:
 
@@ -1221,6 +1222,7 @@ Therefore, max the profit T $\equiv$ min the cut of #Cap(A, B). The corresponden
 
 
 \section{Baseball Elimination}
+Determine whether a team has the chance of wining the champion.
 \begin{enumerate}
 \item $S$ - collection of teams
 \item $x\in S, w_x$ number of of wins
@@ -1279,7 +1281,7 @@ $maxflow \neq g^* \Leftrightarrow$ $z$ cannot win $m$.
 
 Let $(A, B)$ be a cut.
 \begin{align*}
-Cap(A, B) &= \sum_{(x,y)\notin A} g_{x,y}+\sum_{x\in T} m-w_x\\
+cap(A, B) &= \sum_{(x,y)\notin A} g_{x,y}+\sum_{x\in T} m-w_x\\
 &= \sum_{(x,y)}g_{x, y}-\sum_{(x, y)\in A} g_{x, y}+\sum_{x\in T}m-w_x\\
 &= g^*-\sum_{(x, y)\in A} g_{x, y}+m|T|-\sum_{x\in T}w_x\\
 &= g^*-\sum_{(x, y)\in T} g_{x, y}+m|T|-\sum_{x\in T}w_x
@@ -1300,7 +1302,7 @@ $\therefore (x,y)\in A \Leftrightarrow x,y \in A$.
 \item $\exists T\subseteq S$ so that
 \begin{align*}
 \sum_{x\in T} w_x + \sum_{x<y \wedge x, y \in T} g_{x, y} > m|T|  \\
-\text{ // total, not incremental }
+\text{ // total, not incremental games}
 \end{align*}
 
 
@@ -1335,7 +1337,7 @@ Cover the graph with the minimum number of chains. After you select a vertex on 
 \begin{enumerate}
 \item \textbf{Bipartite matching}: $\infty$ cap
 \item \textbf{Edge-disjoint paths}
-\item \textbf{Edge-disjoint paths in undirected graph}: antiparallel edges
+\item \textbf{Edge-disjoint paths in undirected graph}: antiparallel edges $\delta = \min(f(e), f(e'))$. 
 \item \textbf{Supply demand network}: circulation with demand, add $s, t$
 \item \textbf{Survey design}: integer circulation, add $s \overset{\infty}{\leftarrow} t$
 \item \textbf{Airline schedule}: circulation with \textbf{bound} - $[a, b]$, preprocess to $[0, b-a]$.
@@ -1343,15 +1345,25 @@ Cover the graph with the minimum number of chains. After you select a vertex on 
 \item \textbf{Baseball elimination}: relationship (game) graph with $\infty$ cap. avg \& max relationship. 
 \end{enumerate}
 \subsection{Proof Notations}
+Network flow graph 
 \begin{align*}
 G_1 &= (V_1, E_1) \\  
-V_1 &= \{s\} \cup L \cup R \cup \{t\}
+V_1 &= \{s\} \cup L \cup R \cup \{t\} \\
+E_1 &= \{s\} \times L \cup E' \cup  R\times \{t\} \\
+& , \text{where  } E' =...
 \end{align*}
+
+Mincut:
+\begin{align*}
+& cut(A, B) \\ 
+& L_A, L_B, R_A, R_B
+\end{align*}
+
 
 \subsection{Proof Techniques}
 \begin{enumerate}
 \item Integrality theorem: 0-1
-\item Flow Conservation: in = out, continuance
+\item Conservation theorem: in = out, continuance
 \item Maxflow mincut theorem 
 \item Given the objective function. Construct the network flow s.t. mincut eqn equates the objective function. 
 \end{enumerate}
@@ -1762,4 +1774,16 @@ The optimal solution:
 \mat{O}_{LP} = \sum_{v\in V} w_v x_v^* \\
 x_v = roundUp(x_v^*)
 \end{align*}
+
+\chapter{Final Exam Discussion}
+\section{Subset sum}
+\section{Approximating the independent set}
+\section{Warehouse problem}
+\section{Always Non-negative Path}
+\section{Electronic message transmission systems}
+\section{Driving Schedule}
+\section{IPO}
+\section{Scheduling variations}
+
+
 \end{document}
