@@ -54,6 +54,9 @@ You should read it accompanied with the book: \textit{Algorithm Design by Kleinb
 \rih{CNP}. Converse-negative proposition. (i.e. \textit{Contrapositive})
 
 \end{obeylines}
+\section*{Mathematical Symbols}
+Principle: minimal verbosity with minimal overloading and maximal readability. 
+
 
 \section*{Proof techniques}
 Algorithmic problem solving.
@@ -78,6 +81,9 @@ Basic components of writing algorithm problem solutions:
 \item Correctness
 \item Time complexity
 \end{enumerate}
+
+Pseudocode not necessary unless otherwise required. 
+
 \chapter{Introduction}
 \section{Iterative Improvement - Stable Matching Problem }
 Techniques.
@@ -93,6 +99,8 @@ m_1: w_2 > w_1\\
 m_2: w_2 > w_1\\
 \end{align*}
 Stable matching pair: $m_i$ same preference, thus, $w_i$ gets the choices.
+
+\textbf{Blocking pair}: an instability - $m$ and $w$ each prefer the other to their current partners.
 \chapter{Divide \& Conquer}
 \section*{Discussion - tree \& complexity}
 
@@ -131,11 +139,12 @@ $$
 n (\lg n + 1)
 $$
 
-Variant:
+Variant\footnote{c.f. master's theorem}:
 \begin{align*}
 T(n) &= 2T(n/2)+2n \\
 T(n) &= 3T(n/3)+n
 \end{align*}
+
 \begin{tabular}{lllll}
 \hline\noalign{\smallskip}
 \textbf{level} & \textbf{\#nodes per level} & \textbf{size per node} & \textbf{cost per node} & \textbf{cost per level}\\
@@ -183,10 +192,10 @@ Stable Matching: lie to improvement self utility.
 
 Follow the books the convention that men propose. Lying, it is possible to degenerate own outcome. Does lying always improve the utility?
 
-GS algorithm 1 dof: which free man to propose in \pyinline{while} loop. After proof, it always produces the SAME stable matching. Thus, it is possible to always improve by lying.
+GS algorithm 1 dof (degree of freedom): which free man to propose in \pyinline{while} loop. After proof, it always produces the SAME stable matching. Thus, it is possible to always improve by lying.
 
 \subsection*{Men-optimal}
-Proposition: each man get the\textbf{ best stable} partner. Each woman get the \textbf{worst stable} partner.
+Proposition: For matching $S$ produced by GS, each man get the\textbf{ best stable} partner. Each woman get the \textbf{worst stable} partner.
 
 Proof by contradiction: $\exists m\in M$ does not get the best stable partner; thus he was rejected by the best stable partner. Chronologically, consider the first man rejection during the execution time.
 
@@ -199,19 +208,18 @@ In matching $S$, $S$ is produced by GS:
 &m': w > w''
 \end{align*}
 
-In $S'$:
+Assume $\exists w\in W, w=bestStable(m)$ is the best stable for $m$. We have an alternative schedule $S'$ with stable matching:
 \begin{align*}
 & m-w\\
 & m'-w''
 \end{align*}
-, where $\exists w\in W, w=bestStable(m)$ is the best stable for $m$.
 
 
 
-Goal: $m'... w$ is a blocking pari in $S'$; thus $S'$ is not valid; thus to prove that $w\neq bestStable(m)$.
+Goal: $m'... w$ is a blocking pari in $S'$; thus alternative schedule $S'$ is not valid; thus to prove that $w\neq bestStable(m)$.
 
 Another level of proof by contradiction:
-Assume $m': w'' >w$. Then $m'$ proposes to $w''$ but rejected, which contradicts the $m$ is the \textbf{first} rejection. Thus, $m': w>w''$. Thus blocking pair in $S'$
+Assume $m': w'' >w$, in $S$, then $m'$ proposes to $w''$ but rejected, which contradicts the $m$ is the \textbf{first} rejection. Thus, $m': w>w''$. Thus $\exists$ blocking pair in $S'$
 
 \subsection*{Local Minimum}
 $m*n$ matrix. $N=\max(m, n)$
@@ -259,7 +267,7 @@ Calculate 3 parts instead of 4 parts.
 \item $x_0y_0$
 \item $(x_1+x_0)(y_1+y_0)=x_1y_1+x_1y_0+x_0y_1+x_0y_0$
 \end{enumerate}
-\section{FFT}
+\section{FFT (Fast Fourier Transformation)}
 From integer multiplication to polynomial multiplication
 \begin{align*}
 & A(x) = \sum_{i=0}^{n-1} {a_i x^i}\\
@@ -267,6 +275,9 @@ From integer multiplication to polynomial multiplication
 & C(x) = A(x)*B(x) = \sum_{i=0}^{2n-2} {c_i x^i} \\
 & \text{, where } c_i = \sum_{j=0}^i {a_j b_{i-j}}
 \end{align*}
+
+The first $\sum$ is for $x$'s power, the second $\sum$ is for coefficient. 
+
 Notice that sum of indexes is the same.
 
 Fourier transformation: frequency domain $\leftrightarrow$ time domain. Coefficient domain $\leftrightarrow$ value domain.
@@ -280,6 +291,8 @@ General form of FFT. Books use the index that starts at 0.
 |\vec c| &= |\vec a|+|\vec b| -1
 \end{align*}
 It is the 1-d convolution, which is exactly the same as 2-d convolution except that the dimension has increased.
+
+FFT convolution takes $O(n \lg n)$ instead of $(n^2)$. 
 
 Take middle part (\textbf{subset}) of $\vec c$:
 $$
@@ -336,7 +349,7 @@ Does there exist a pair of point $l \in \mat{L}, r \in \mat{R}$, s.t. $d(l, r) <
 \item \textbf{Inside the band}: require $d(l, r)<\delta \Ra$ for each scanning point $cur$,  filter out points reside outside the $\pm\delta$ along the $y$-axis; only keeps neighbors. \textbf{Limited search space}. After filtering, find the upper bound of number of neighboring points.
 \end{enumerate}
 
-If you divide the band into finer cells of length $\frac{\delta}{2}$. For each point $cur$, there are only $O(16-1)$ points that is possible to have $d(cur, nbr)<\delta$ within the 16 neighboring cells respectively. $+4: 4^2$. Then reduce the search space into $O(16-1)$ along the $y$-axis. Notice that $\forall cell$, at most 1 point $\in cell$ due to the $cell \in \mat{L}$ or $cell \in \mat{R}$.
+If you divide the band into finer cells of length $\frac{\delta}{2}$. For each point $cur$, there are only $O(16-1)$ points that is possible to have $d(cur, nbr)<\delta$ within the 16 \textbf{forward-neighboring}\footnote{Directional search} cells respectively. $+4: 4^2$. Then reduce the search space into $O(16-1)$ along the $y$-axis. Notice that $\forall cell$, at most 1 point $\in cell$ due to the $cell \in \mat{L}$ or $cell \in \mat{R}$.
 
 Although unnecessary, we can further reduce the search space, if the $cur\in \mat{L}$, no need consider $\{nbr|nbr\in \mat{L}\}$, the only need to consider $4^2/2=8$ neighbors, up 4 and down 4. Thus need to compare 8 $nbr$ in $S_y$.
 
@@ -379,7 +392,7 @@ $$
 2^k n \log n
 $$
 \section{Majority element}
-find $x$ in array $A$ with length $n$ s.t. $cnt_x > n -cnt_x$.
+Find $x$ in array $A$ with length $n$ s.t. $cnt_x > n -cnt_x$.
 
 Find a pair $(a_i, a_j)$ in $A$, if $a_i \neq a_j$, delete both from $A$. it still holds that: $C^{A'}_x > |A'|-C^{A'}_x$. Proof, since $a_i\neq a_j$, at most 1 of them equals $x$, then $C^{A'}_x$ decrements at most by 1, $|A'|$ decrements by 2.
 
@@ -400,6 +413,8 @@ After conquer:
 \begin{align*}
 x | y|y
 \end{align*}
+
+Therefore, the counter is necessarily needed. 
 \subsection{Skyline}
 Similar to visible surface, but easier.
 
@@ -414,7 +429,9 @@ Use D\&C. When the skyline changes? At start and end.
 
 \textbf{Divide}. Divide into $B_1， B_2$ and conquer them.
 
-\textbf{Merge}. Merge efficiently $B^1, B^2$, scan the $x$ from either $B^1, B^2$, $h_x$ at $x$ is $h_x=\max(h^1_x,h_x^2)$. Sorting building by $s$ can make it easier. Use $e^1_{end}$ and scan the points from $B^2$
+\textbf{Merge}. Merge efficiently $B^1, B^2$, scan the $x$ from either $B^1, B^2$, $h_x$ at $x$ is $h_x=\max(h^1_x,h_x^2)$. Sorting building by $s$ can make it easier. Use $e^1_{end}$ and scan the points from $B^2$.
+
+Alternatively, keep a heap. 
 
 \chapter{Greedy Algorithm}
 Agenda:
@@ -427,7 +444,7 @@ Techniques:
 \begin{enumerate}
 \item Exchange method
 \begin{enumerate}
-\item Compare $\mat{G}, \mat{O}$.
+\item Compare the greedy strategy and the optimal strategy $\mat{G}, \mat{O}$.
 \begin{enumerate}
 \item Starts from head, the 1st one
 \item Starts with the immediate neighbors, inversion.
@@ -439,8 +456,14 @@ Techniques:
 \item Mathematical induction
 \end{enumerate}
 \end{enumerate}
-\section{Events scheduling}
-\textbf{Definition} of the problem: Max number of intervals without overlapping.
+\section{Interval scheduling}
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.50]{4_2}}
+\caption{Interval Scheduling}
+\label{fig:4_2}
+\end{figure}
+\textbf{Definition} of the problem: Max number of intervals without overlapping (i.e. min the number of overlapping intervals).
 
 \textbf{Notations}
 $$
@@ -470,8 +493,8 @@ Technique ``\textit{Exchange Method}". rearrange the $\mat{O}$ to look like $\ma
 For the 1st elt:
 \begin{enumerate}
 \item if $G_0=O_0$, then move to the next index
-\item else, $G_0.f < O_0.f$ since greedy; and then exchange $O_0$ with $G_0$ without conflicting other $\mat{O}[1:]$.
-
+\item else, $G_0.f < O_0.f$ since greedy; and then exchange $O_0$ with $G_0$ without conflicting other $\mat{O}[1:]$. \footnote{In $\mat{O}$, what if $\mat{G}_0$ is placed in another place of $\mat{O}$. Directly replace is legal since the intermediate duplication is allowed without affecting the final result.}
+ 
 There is no conflicting in $\mat{)}[1:]$, because $\forall i\geq 1, O_i.s > O_0.f >G_0.f$.
 \end{enumerate}
 
@@ -582,7 +605,7 @@ Prof by contradictions + \textit{Exchange Method}
 
 Consider the greedy solution $\mat{G}$ s.t. scheduled as $d_1 \leq d_2\leq ...$. Consider a opt solution $\mat{O}, \exists i,j, d_i > d_j$ s.t. $i$ is scheduled earlier.
 
-$\Leftarrow$ Exchange method: exchange $i, j$, but hard to analyze for the schedules $\mat{O}[i+1:j]$. However, If $i, j$ is \textbf{adjacent}, it is easier.
+$\Leftarrow$ Exchange method: exchange $i, j$, but hard to analyze for the in-between schedules $\mat{O}[i+1:j]$. However, If $i, j$ is \textbf{adjacent}, it is easier to prove.
 \begin{figure}[!htp]
 \centering
 \subfloat{\includegraphics[scale=1.0]{4_6}}
@@ -618,7 +641,7 @@ $l'_i=f'_i - d_i=f_j-d_i$. Thus, $l'_i<l_j$
 
 Here it does not consider $\exists j, d_j>f_j$
 
-Then like bubble sort to swap the nodes.
+Then like \textbf{bubble sort} to swap the nodes.
 
 We say that a schedule has an \textit{inversion} if a job $i$ with deadline $d_i$ is scheduled \textbf{before} another job $j$ with \textbf{earlier} deadline $d_j<d_i$.
 
@@ -640,17 +663,39 @@ Proof. \textit{Exchange method}, $\mat{O}, \mat{G}$ consider an inversion point.
 DP is the superset of Greedy.
 \chapter{Dynamic Programming (DP)}
 \section{General}
+\subsection{Techniques}
 \begin{enumerate}
-\item Forward (prefix) dp $[:i]$, backward (suffix) dp $[i:]$
-\item End with $i$ (required); End before or with $i$ (optional)
-\item Expand parameters of the state $F$ to refine the substructure
-\item From different perspective
+\item Forward (\textbf{prefix}) dp $[:i]$, backward (\textbf{suffix}) dp $[i:]$
+\item \textbf{End with} $i$ (required); \textbf{End before or with} $i$ (optional)
+\item \textbf{Expand} parameters of the state $F$ to refine the substructure
+\item From different \textbf{perspective}
 \begin{enumerate}
 \item Consumed vs. Remaining
 \item Assigner vs. Assignee
 \end{enumerate}
 \end{enumerate}
-\section{Interval Scheduling with Weights}
+\subsection{Correctness Proof Routine}
+Example:
+\begin{align*}
+F_{i, k} = \min_{p: p\in [0, d_i] \wedge \bar d_i-p-k \geq 0}\Big(F_{i-1, k-p} +v_ip+w_i(\bar
+d_i-p-k)\Big)
+\end{align*}
+\textbf{Correctness Proof.}
+\begin{enumerate}
+\item The base substrcuture $F_{1, k} \forall \text{ valid }k$ is optimal.
+\item At point $(i, k)$, we enumerate all possible options of warehouse $V$ sending
+$p$ widgets to $D_i$. The warehouse $W$ implicity sends $\bar d_i -p-k$ to $D_i$. The
+substructure $F_{i-1, k-p}$ is optimal. 
+\item The above transition function correctly computes the transition from each substrcuture
+$(i-1, k-p)$ to target substructure $(i, k)$. 
+\item Because we take the minimization over each enumerated possible option $(i-1,
+k-p)$, then the subrpoblem $F_{i, k}$ is correctly computed as optimal. 
+\item Similarly, $\forall (i, k), R_{i, k}$ records optimal $(x_i, y_i)$ while $F_{i,
+k}$ is being calculated.  $\blacksquare$
+\end{enumerate}
+
+
+\section{Interval Scheduling with Weights}\label{sec:mindp}
 Given intervals $A$: $[s_i, f_i), w_i\geq 0$, where $w$ is the weight.
 
 The state definition is to redefine the problem.
@@ -660,7 +705,7 @@ $M_i=$ max sum of weights of a non-overlapping set of jobs where the jobs come f
 
 Least relaxed problem: $M_1$. Most related problem $M_n$.
 
-\textbf{State transition functions}: Basically you have two choices:
+\textbf{State transition functions}: Basically you have two choices -  choose $A_i$ or not.
 \begin{align*}
 M_i = \min&\Big( w_i+M_j \text{, where $j$ is the earliest index s.t. } s_j\geq f_i\\
 &M_{i+1}\Big)
@@ -684,16 +729,23 @@ Formal math def:
 &\text{Initialization}\\
 & M_{i}=W_n \\
 & D_n=1 \\
-\\
-&\text{State transition} \\
-&\text{for i = n-1 downto 1:}\\
-& M_i = \max\Big(w_i+M_{N_i} \text{ if }N_i\neq None \text{ else } w_i, \\&
-\quad M_{i+1} \Big) \\
-& D_i = 1 \text{ if }w_i+M_{N_i}\geq M_{i+1} \text{ or } w_i \geq M_{i+1} \\
-& \quad 0 \text{ ow} \\
-& \text{Output the optimal solution} \\
-& out(1)\\
 \end{align*}
+The objective of maintaining $N_i$ is to reduce the time complexity from $O(n^2)$ to $O(n)$. 
+\begin{eqnarray*}
+N_i = \left\{ \begin{array}{rl}
+  i+1 &\mbox{if $s_{i+1} \geq f_i$} \\
+  N_{i+1} &\mbox{ow}
+       \end{array} \right.
+\end{eqnarray*}
+State transition
+\begin{python}[mathescape]
+for i = n-1 downto 1:
+  $M_i = \max\Big(w_i+M_{N_i} \text{ if }N_i\neq \phi \text{ else } w_i $
+             $\quad M_{i+1} \Big)$
+  $D_i = 1 \text{ if }w_i+M_{N_i}\geq M_{i+1} \text{ or } w_i \geq M_{i+1}$
+      $\quad 0 \text{ ow}$
+\end{python}
+Output the optimal solution - $out(1)$
 \begin{python}[mathescape]
 def out(i):
   if $D_i=$ 1:
@@ -742,7 +794,7 @@ $$
 F_i = \min_{j\in(i,n]}\Big(F_j+\mat{C}(i, j)+\mat{P}\Big)
 $$
 
-, where $\mat{C}(i, j)$ is the cost of transition from $i$ to $j$, and $\mat{P}$ is the penalty.
+, where $\mat{C}(i, j)$ is the cost of transition from $i$ to $j$, and $\mat{P}$ is the penalty of taking a transition.
 
 \section{RNA Secondary Structures}
 \begin{figure}[!htp]
@@ -788,7 +840,7 @@ Boundary condition. When $j-i<5$:
 F_{i, j} = 0
 \end{align*}
 
-Transition function. For the current scanning index $j-1$, have two options pair $(j-1, t)$ or not.
+Transition function. For the current scanning index $j-1$, have two options - pair $(j-1, t)$ or not.
 
 \begin{align*}
 F_{i, j} = \max\Big(&F_{i, j-1}, \\
@@ -815,18 +867,19 @@ $$
 M_i = p_i + M_{L_i}
 $$
 
-TODO: efficient way to reduce the complexity to $O(n)$.
+Efficient way to reduce the complexity from $O(n^2)$ to $O(n)$ - by keeping another dp defining the $Next$ as in Section \ref{sec:mindp}.
 \subsection{Class Assignment}
-The order of the classes does not matter. The strategy: find the smallest available room.
-
-\textbf{Proof.} the correctness of the strategy.
-
-\textit{Exchange method}. Fixed the order of classes.
-$C(\alpha)\geq S(\alpha)$.
+Given a set of classes with seating requirement $S$ and a set of rooms with capacity $C$. Minimize the total sum of capacities of the rooms. 
 
 $\mat{G}=\{R_1,R_2, ..., R_n\}$, where $\forall i, C(R_i)\geq S(i)$.
 
 $\min \sum_{i=1}^n C(R_i)$.
+
+The strategy $\mat{G}$: find the smallest available room for any given room $i$.
+
+The order of the classes does not matter. \textbf{Fixed} the order of classes (possible sort by $S(i)$). Class $i$ is at the index $i$. 
+
+\textbf{Proof.} Prove the correctness of the strategy using \textit{Exchange method}. 
 
 Assume a optimal produces $\mat{O}=\{R_1', R_2', ..., R_n'\}$ with a smaller sum.
 
@@ -837,6 +890,17 @@ Assume $R_1$ appears in $\mat{O}$ as $R_j'$.
 & \text{Consequently, after swapping,}  \mat{O}[0]=\mat{G}[0]
 \end{align*}
 
+Another way:
+\begin{align*}
+& \text{Given } R_1 = R_j' \\
+& \text{Goal: swap } R_1', R_j' \\
+& \Leftarrow C(R_1') \geq S(R_j') \wedge C(R_j') \geq S(R_1') \\
+& \Leftarrow C(R_1') \geq C(R_j') \geq S(R_j') (\because \text{greedy}) \\
+& \quad \wedge C(R_j') \geq S(R_1) = S(R_1')
+\end{align*}
+
+
+\subsection{Unit coverage}
 \textbf{Example}.
 Unit intervals cover the houses. Greedy method: left endpoint just cover the 1st house, then remove all covered houses.
 
