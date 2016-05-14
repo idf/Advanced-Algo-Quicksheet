@@ -923,7 +923,7 @@ Properties
 \item Conservation: $$\forall v\in V/\{s,t\}, \sum_{uv\in E}f(uv)=\sum_{vu\in E}f(vu)$$
 , where $uv$ is the inflow for $v$, and $vu$ is the outflow. Compact notation $f^{in}(v), f^{out}(v)$.
 \item The Value of the graph:
-$$V(f) = \sum_{su\in E}f(su)$$
+$$V(f) = \sum_{su\in E}f(su)=f^{out}(s)=f^{in}(s)$$
 , outflow for $s$.
 \end{enumerate}
 Target: find $f$ with $\max V(f)$.
@@ -941,13 +941,13 @@ $G_R$ - Residual Graph
 \begin{figure}[!htp]
 \centering
 \subfloat{\includegraphics[scale=0.9]{7_4}}
-\caption{Flow network and residual graph}
+\caption{Flow network and residual graph. Dotted line is the new path found}
 \label{fig:7_4}
 \end{figure}
 \begin{align*}
 &G_R = (V, E')~\text{s.t.}\\
 \end{align*}
-$G_R$ has the new capacity $C_{GR}$ s.t.
+$G_R$\footnote{capacity rather than flow} has the new capacity $C_{G_R}$ s.t.
 \begin{enumerate}
 \item Forward edge: $C_{uv}-f_{uv}$. (leftover)
 \item Backward edge:\ $-f_{uv}$. (potential undo amount)
@@ -964,7 +964,7 @@ $G_R$ has the new capacity $C_{GR}$ s.t.
 \item Find an path $P$ $s$-$t$ in $G_R$.
 $$\delta(P)=\min_{e\in P} \{C_{G_R}(e)\}$$
 strictly, $\delta(P)>0$.
-\item Augment $f$ to get new $f'$, the flow.
+\item Augment $f$\footnote{flow rather than capacity} to get new $f'$, the flow.
 \begin{align}
 & f'(uv)= f(uv)+\delta \text{ if $uv\in P$ in a forward edge}\\
 & f'(vu)= f(vu)-\delta \text{ if $uv \in P$ in a backward edge} \label{eqn:backward}\\
@@ -1001,7 +1001,7 @@ as $G_f$).
 
 Complexity $O(C_{\text{mincut}}|E|)$.
 \subsubsection{Cut}
-Cut. Let $G_R$ be s.t. $\neg \exists s \sim t$ path. $a \sim b$ means there is a path from $a$ to $b$. 
+Cut. Let $G_R$ be a graph s.t. $\neg \exists s \sim t$ path. $a \sim b$ means there is a path from $a$ to $b$ - \textbf{reachable}. Notice, it is $G_R$ rather than $G$, thus possible no path.
 \begin{align*}
 & A = \{u| s\sim_{G_R} u\} \text{ reachable in graph $G_R$}\\
 & B = V/A\\
@@ -1050,7 +1050,7 @@ v(f) &= f^{out}(A)-f^{in}(A) \\
 
 This proof does not require any knowledge of Ford-Fulkerson algorithm $\blacksquare$.
 
-At the time we fail find $s$-$t$ path. The Ford-Fulkerson Algorithm \textbf{terminates} when the flow $f$ has \textbf{no} $s$-$t$ path in the residual graph $G_R$ (or written as $G_f$).
+At the time we fail to find $s$-$t$ path. The Ford-Fulkerson Algorithm \textbf{terminates} when the flow $f$ has \textbf{no} $s$-$t$ path in the residual graph $G_R$ (or written as $G_f$).
 
 Consider edge $uv, C(uv)$. See figure \ref{fig:7_5}.
 \begin{align*}
@@ -1068,12 +1068,18 @@ u \text{ reachable from } s.
 \begin{lem}
  $f(uv)=C(uv)$.
 \end{lem}
-\textbf{Proof.} Prove no more positive flow. If there is a $f(uv)< C(uv)$, then there is a \textbf{forward} edge in $G_R$, then $v$ is \textbf{reachable} by $s$; which is contradiction. $\blacksquare$
+\textbf{Proof.} Prove no more positive flow. If there is a $f(uv)< C(uv)$, then there is a \textbf{forward} edge in $G_R$, then $v$ is \textbf{reachable} by $s$ ($s\sim v$); which is contradiction. $\blacksquare$
 
 \begin{lem}
 $f(u'v')=0$
 \end{lem}
-\textbf{Proof}. Prove $f(u'v')=0$, i.e. proving not flow from $B$ to $A$. (not backward edge in $G_R$). If $(u'v')\neq 0$, it gives rise to \textbf{backward} edge $v'u'$ in $G_R$, then $u'$ is \textbf{reachable} by $s$. Thus contradiction. $\blacksquare$
+\textbf{Proof}. Prove $f(u'v')=0$, i.e. proving not flow from $B$ to $A$. (not backward edge in $G_R$). If $(u'v')\neq 0$, it gives rise to \textbf{backward} edge $v'u'$ in $G_R$, then $u'$ is \textbf{reachable} by $s$ ($s\sim u'$). Thus contradiction. $\blacksquare$
+
+After termination, 
+$$
+flow =maxflow , flow = \sum_{u\in A, v\in B}C(uv) = cap(cut) \geq mincut
+$$
+
 \subsubsection{Scaling algorithm}
 Find the bottleneck of the path, and $\max$ the bottleneck, it can be done by Dijkstra's algorithm.
 
@@ -1137,6 +1143,7 @@ $$
 \label{fig:bipart}
 \end{figure}
 See figure \ref{fig:bipart}
+
 \begin{align*}
 & G_B = (V_1, V_2, E') \\
 & G=(V, E) \\
@@ -1146,6 +1153,8 @@ See figure \ref{fig:bipart}
 & \forall i \in V_1, (s, i) \in E \\
 & \forall j \in V_2, (s, j) \in E.
 \end{align*}
+
+There is the a formal definition of the graph in Section \ref{sec:networkFlowNotations}.
 
 Matching.
 
@@ -1237,7 +1246,7 @@ Proof necessary condition.
 \item $S$ - set of \textit{project}
 \item project $i\in S$, \textit{gain} $P_i$ could be negative
 \item Objective: Select $T\subseteq S$ s.t. $\max \sum_{i\in T} P_i$.
-\item Constraint: Directed graph $G=(S, E)$ on projects
+\item Constraint: Directed graph $G=(S, E)$ on projects. Dependency constraints.
 $$
 i \ra j
 $$
@@ -1245,7 +1254,7 @@ $i$ in selected $\Ra$ $j$ should be selected. Note the graph is directed. Comple
 
 $T\subseteq S$ in closed, if $i\in T, i\ra j, j \in T$.
 \end{enumerate}
-Technique: add $+\infty$ edge weight.
+Technique: add $+\infty$ edge weight for dependency constraints, thus cannot cut. 
 
 
 Consider $\forall i, P_i \geq 0$ and $\forall i, P_i <0$. These special cases are shown below:
@@ -1272,7 +1281,7 @@ In general case.
 
 $Cap(A, B)=\sum_{e~out~A} = \sum_{j \notin A, P_j\geq 0}P_j+\sum_{j \in A, P_j<0}-P_j$. If $j \notin A, j$ is connected to $s$. If $j \in A, j$ is connected to $t$.
 
-$T=A/\{s\}$.
+$T=A/\{s\}$, meaning the selected set of projects. 
 
 \begin{align*}
 Cap(A, B)&=\sum_{j\notin T, P_j\geq 0}P_k+\sum_{j\in T, P_j <0}(-P_j) \\
@@ -1286,7 +1295,7 @@ Therefore, max the profit T $\equiv$ min the cut of #Cap(A, B). The corresponden
 
 
 \section{Baseball Elimination}
-Determine whether a team has the chance of wining the champion.
+Determine whether a team has the chance of wining the \textbf{champion} (goal).
 \begin{enumerate}
 \item $S$ - collection of teams
 \item $x\in S, w_x$ number of of wins
@@ -1309,9 +1318,8 @@ Under this notation, we have developed a very rudimentary graph:
 \label{fig:baseball0}
 \end{figure}
 \subsection{Intuition}
-\begin{align*}
+avg $\Ra$ existence 
 
-\end{align*}
 \subsection{Network Construction}
 From the $z$'s perspective.
 
@@ -1356,7 +1364,7 @@ If $maxflow <g^*$, $m<(\sum_{x\in T} w_x+\sum_{(x,y)\in A} g_{x,y})/|T|$. i.e. t
 
 \textbf{Claim 1.} $(x,y)\in A \Rightarrow x,y \in A$. If $x \notin A$, then $x \in B$, then $\exists e$ that connects $(x,y)\in A$ and $x\in B$, thus mincut $+\infty$, which contradicts the fact that the mincut is finite $\blacksquare$.
 
-\textbf{Claim 2.} $(x,y)\in A \Leftarrow x,y \in A$. If not, $(x,y)\in B$, then can move $(x, y)$ to $A$ to reduce the cut. 
+\textbf{Claim 2.} $(x,y)\in A \Leftarrow x,y \in A$. If not, assume otherwise, $(x,y)\in B$, then can move $(x, y)$ to $A$ to reduce the cut. 
 
 $\therefore (x,y)\in A \Leftrightarrow x,y \in A$. 
 
@@ -1408,8 +1416,8 @@ Cover the graph with the minimum number of chains. After you select a vertex on 
 \item \textbf{Project selection}: relationship (dependency) graph with $p_v, \infty$ cap. 
 \item \textbf{Baseball elimination}: relationship (game) graph with $\infty$ cap. avg \& max relationship. 
 \end{enumerate}
-\subsection{Proof Notations}
-Network flow graph 
+\subsection{Proof Notations}\label{sec:networkFlowNotations}
+Network flow graph, subscript 1 for new graph.
 \begin{align*}
 G_1 &= (V_1, E_1) \\  
 V_1 &= \{s\} \cup L \cup R \cup \{t\} \\
@@ -1426,9 +1434,9 @@ Mincut:
 
 \subsection{Proof Techniques}
 \begin{enumerate}
-\item Integrality theorem: 0-1
-\item Conservation theorem: in = out, continuance
-\item Maxflow mincut theorem 
+\item \textbf{Integrality} theorem: 0-1
+\item \textbf{Conservation} theorem: in = out, continuance
+\item \textbf{Maxflow mincut} theorem 
 \item Given the objective function. Construct the network flow s.t. mincut eqn equates the objective function. 
 \end{enumerate}
 
