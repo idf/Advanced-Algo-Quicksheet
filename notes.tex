@@ -1500,7 +1500,7 @@ Greedy key: assign the job to the \textbf{smallest} load machine. Thus machine $
 T_{i^*} - t_{j^*} &\leq \frac{1}{m} \sum_{i} T_i\\\
 T_{i^*} - t_{j^*} &\leq \bar T \\
 T_{i^*} &\leq \bar T + t_{j^*}\\
-T_{i^*} &\leq T^* +T^*
+T_{i^*} &\leq T_\mat{O} +T_\mat{O}
 \end{align*}
 , where $t_{j^*}\leq t_{max}\leq T^*$.
 
@@ -1512,9 +1512,9 @@ $$
 $$
 
 \subsubsection{Improvement}
-When $n\leq m$, each machine has at most 1 job; thus $T=t_{max}$.
+When $n\leq m$, each machine has at most 1 job; thus $T=t_{max}, \therefore T_\mat{G}=T_\mat{O}$.
 
-when $n>m$, sort in decreasing order. \fbox{Improvement} from sorting. 
+When $n>m$, sort in \textbf{decreasing} order. \fbox{Improvement} from sorting. 
 
 \begin{align*}
 & T_\mat{O} \geq \bar T \\
@@ -1522,23 +1522,22 @@ when $n>m$, sort in decreasing order. \fbox{Improvement} from sorting.
 & T_\mat{O} \geq t_j + t_{m+1} \geq 2t_{m+1} \\
 \end{align*}
 
-, where $j\in[1, m]$.
+, where $j\in[1, m]$. Pigeon hole principle, assigned at leat two jobs.
+\\
 
-Pigeon hole principle, assigned at leat two jobs.
-
-Consider max machine $i$, with the last assigned job $j$. Before assignment $j$ it is $T$
+Consider max machine $i^*$, with the last assigned job $j^*$. Before assignment $j^*$ it is $T$
 
 \begin{align*}
-& T_\mat{G}=load(i) = T+t_j\\
-& T \leq \bar T \text{ since greedy}\\
-& T \leq T_\mat{O} \\
-& t_i \leq t_{m+1} \text{ since index} \\
-& t_i \leq \frac{1}{2}T_\mat{O}
+& T_\mat{G}=load(i^*) = T+t_{j^*}\\
+& T_{i^*}-t_{j^*} \leq \bar T \text{ since greedy}\\
+& T_{i^*}-t_{j^*} \leq T_\mat{O} \\
+& t_{j^*} \leq t_{m+1} \text{ since index, sorted in desc order} \\
+& t_{j^*} \leq \frac{1}{2}T_\mat{O}
 \end{align*}
 
 Regarding $t_j$, there are two cases:
 \begin{enumerate}
-\item If the max loaded machine only has 1 job, then $T = t_{max}$
+\item If the max loaded machine only has 1 job, then $T = t_{max}$, which is trivial. 
 \item If the machine has at least 2 jobs, $j\geq m+1$.
 \end{enumerate}
 
@@ -1551,7 +1550,7 @@ Technique: \textbf{track} the optimal $T_\mat{O}$. Inequality.
 \subsection{Notation}
 $n$ towns $S$, $k$ shopping malls $C$.
 
-distance:
+Single-link distance:
 $$
 dist(s_i, C) =\min_{c\in C} dist(s_i, c)
 $$
@@ -1567,7 +1566,7 @@ $$
 \min r(C)
 $$
 \subsection{Natural greedy algorithm}
-Put the first center at the centering $s_{center}$, and then find the $s$ with max, put $c$ right at here.
+Put the first center at the centering $s_{center}$, and then find the $s$ with max i.e. $s_t=\arg\max_s dist(s, C_t)$, put $c$ right at here. $t$ represents the current executing snapshot at time $t$. 
 
 \begin{figure}[!htp]
 \centering
@@ -1584,9 +1583,9 @@ $\frac{r_\mat{G}}{r_\mat{O}}<2$.
 
 Let $C=\{C^i | i\in[1, k]\}$ created by $\mat{G}$ at each step with cardinality $i$.
 
-Assume $\exists j, dist(s_j, C^k)\geq 2r_\mat{O}$. distance between any two $s$ within a $r$-cover is at most $2r$.
+Proof by contradiction. Assume $\exists j, dist(s_j, C^k)\geq 2r_\mat{O}$. 
 
-In $\mat{O}$, $C^*$. We can use the existence of this solution $C^∗$ in $\mat{O}$ though we do not know what $C^*$ is. Consider any site $s \in S$. There must be a center $c^* \in C^*$ that covers site $s$, and this center $c^*$ is at distance at most $r$ from $s$. $\mat{G}$ takes this $s$ as a center instead of $c^*$, as we have no idea what $c^*$ is. To make s cover all the sites that $c^*$ covers in the unknown solution $C^*$, this is accomplished by \fbox{expanding the radius} from $r$ to $2r$. All the sites that were at distance at most $r$ from center $c^*$ are at distance at most $2r$ from $s$ (by the triangle inequality in the circle).
+Distance between any two $s$ within a $r$-cover is at most $2r$. In $\mat{O}$, $C^*$. We can use the existence of this solution $C^∗$ in $\mat{O}$ though we do not know what $C^*$ is. Consider any site $s \in S$. There must be a center $c^* \in C^*$ that covers site $s$, and this center $c^*$ is at distance at most $r$ from $s$. $\mat{G}$ takes this $s$ as a center instead of $c^*$, as we have no idea what $c^*$ is. To make s cover all the sites that $c^*$ covers in the unknown solution $C^*$, this is accomplished by \fbox{expanding the radius} from $r$ to $2r$. All the sites that were at distance at most $r$ from center $c^*$ are at distance at most $2r$ from $s$ (by the triangle inequality in the circle).
 
 \section{Vertex Cover}
 $G=(V, E)$. Select $V'\subseteq V$ that covers all $E$.
@@ -1598,9 +1597,9 @@ Book 11.4.
 
 Track the optimal solution.
 
-\textbf{Vertex perspective}. Naive greedy: select $v\in V$ with the largest degree. Counter example that approximate ration $>2$.
+\textbf{Vertex perspective}. Naive greedy: select $v\in V$ with the largest degree. Counter example that approximate ratio $>2$.
 
-\textbf{Edge perspective}. Select the maximal matching. Collection of edges that do not share $v$.
+\textbf{Edge perspective}. Select the maximal matching from Network Flow. Collection of edges that do not share $v$.
 
 Select the $v$ on the maximal matching. It covers edges, since is no more edge does not share vertex with maximal matching (i.e. all edges share a vertex in maximal matching). Thus, by select all $v$ on the maximal matching. It can cover.
 
@@ -1660,7 +1659,14 @@ How to find feedback edge set in undirected graph. $G=(V, E)$.
 \section{Primal-Dual Method}
 \subsection*{Min Vertex Cover}
 
-TODO graph for price allocation: 
+Graph for price allocation: 
+
+\begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=1.40]{11_8}}
+\caption{Pricing Method for Vertex Cover}
+\label{fig:11_8}
+\end{figure}
 
 
 Undirected $G=(V, E)$
@@ -1685,7 +1691,9 @@ $$\sum_{e~incident~v} P_e\leq w_v$$
 
 $\leq$ comes out from linear programming. Duality. 
 
-Primal dual method: assign vertex costs to edge. 
+Primal dual method: assign vertex \textbf{costs} to edge as the \textbf{price}. 
+
+\textbf{Fair pricing}The price must be fair. 
 
 Select edges s.t. no share vertex (idea from max matching)
 
@@ -1697,7 +1705,7 @@ Code:
 \begin{python}[mathescape]
 $\forall e\in E, P_e=0$
 $S^*=\phi$
-while $\exists uv\in S$ s.t. $u\notin S^* \wedge v\notin S^*$
+while $\exists uv\in S$ s.t. $u\notin S^* \wedge v\notin S^*$:
   increase the $P_{uv}$ just before violating fairness
   maintain $S^*$
 \end{python}
@@ -1732,7 +1740,7 @@ Primal-dual comes from linear programming. \textit{Price} dual the \textit{cost}
 \label{fig:setCover}
 \end{figure}
 \begin{itemize}
-\item $S_i, w_i\geq 0$
+\item Each set $S_i$ with weights (i.e. price) $w_i\geq 0$. 
 \item Select $J \subseteq \{1, ..., n\}$ s.t.  $\cup_{i\in J} S_i = U$ and 
 $$
 \min \sum_{i\in J} w_i
@@ -1753,6 +1761,8 @@ $$
 \frac{w_i}{|R\cap S_i|}
 $$
 
+, where $R$ is the remaining vertexes to be covered. 
+
 Code: 
 \begin{python}[mathescape]
 $R=U$
@@ -1762,7 +1772,7 @@ while $R$:
   $R=R-S_j$
 \end{python}
 
-When each vertex $v$ is purchased, $v$ pays an amortized price. 
+When each vertex $v$ is purchased, $v$ pays an \textbf{amortized price}. 
 
 Assign price 
 \begin{align*}
@@ -1786,7 +1796,7 @@ Harmonic function: Euler Constant $\gamma$, capturing the continuous integration
 \begin{figure}[!htp]
 \centering
 \subfloat{\includegraphics[scale=1.20]{Gamma-area}}
-\caption{$\gamma$}
+\caption{Harmonic function and difference $\gamma$}
 \label{fig:gammaArea}
 \end{figure}
 
@@ -1844,6 +1854,6 @@ The optimal solution:
 \begin{align*}
 \mat{O}_{ILP}\geq \mat{O}_{LP} \text{ min problem}\\
 \mat{O}_{LP} = \sum_{v\in V} w_v x_v^* \\
-x_v = roundUp(x_v^*)
+x_v = \lceil x_v^* \rceil
 \end{align*}
 \end{document}
